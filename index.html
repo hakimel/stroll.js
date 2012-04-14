@@ -1,0 +1,98 @@
+<!doctype html>  
+<html lang="en">
+	
+	<head>
+		<meta charset="utf-8">
+		
+		<title>CSS Scroll Effects</title>
+
+		<meta name="description" content="A set of list scroll effects applied via CSS.">
+		<meta name="author" content="Hakim El Hattab">
+		
+		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+		
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/main.css">
+	</head>
+	
+	<body>
+
+		<header>
+			Silly list scroll effects. <small>Tested in WebKit/FF Nightly. In the mood for more CSS? <a href="http://hakim.se/experiments">Here you go</a>.</small>
+
+			<div>
+				<a href="http://twitter.com/share" class="twitter-share-button" data-text="List scroll effects applied via CSS. Created by @hakimel" data-url="http://lab.hakim.se/scroll-effects" data-count="small" data-related="hakimel"></a>
+				
+				<iframe id="facebook-button" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Flab.hakim.se%2Fscroll-effects%2F&layout=button_count&show_faces=false&width=93&action=like&font=arial&colorscheme=light&height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:85px; height:24px; position: relative; top: 4px;" allowTransparency="true"></iframe> 
+
+				<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+			</div>
+		</header>
+		
+		<div id="main">
+			<article>
+				<h2>Curl (CSS 3D)</h2>
+				<ul class="curl"></ul>
+			</article>
+			<article>
+				<h2>Wave</h2>
+				<ul class="wave"></ul>
+			</article>
+			<article>
+				<h2>Flip (CSS 3D)</h2>
+				<ul class="flip"></ul>
+			</article>
+			<article>
+				<h2>Skew</h2>
+				<ul class="skew"></ul>
+			</article>
+			<article>
+				<h2>Fan</h2>
+				<ul class="fan"></ul>
+			</article>
+			<article>
+				<h2>Tilt</h2>
+				<ul class="tilt"></ul>
+			</article>
+			<article>
+				<h2>Papercut</h2>
+				<ul class="papercut"></ul>
+			</article>
+			<article>
+				<h2>Zipper</h2>
+				<ul class="zipper"></ul>
+			</article>
+		</div>
+
+		<script src="js/stroll.js"></script>
+		<script>
+			// List items are generated via JS cause it looks so damn 
+			// ugly when repeated all over the HTML
+			var items = 'One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve,Thirteen,Fourteen,Fifteen,Sixteen,Seventeen,Eighteen,Nineteen,Twenty,Twentyone,Twentytwo,Twentythree,Twentyfour,Twentyfive,Twentysize,Twentyseven,Twentyeight,Twentynine,Thirty,Thirtyone,Thirtytwo,Thirtythree,Thirtyfour,Thirtyfive,Thirtysize,Thirtyseven,Thirtyeight,Thirtynine,Fourty,Fourtyone,Fourtytwo,Fourtythree,Fourtyfour,Fourtyfive,Fourtysix,Fourtyseven,Fourtyeight,Fourtynine,Fifty,Fiftyone,Fiftytwo,Fiftythree,Fiftyfour,Fiftyfive,Fiftysix,Fiftyseven,Fiftyeight,Fiftynine,Sixty,Sixtyone,Sixtytwo,Sixtythree,Sixtyfour,Sixtyfive,Sixtysix,Sixtyseven,Sixtyeight,Sixtynine,Seventy,Seventyone,Seventytwo,Seventythree,Seventyfour,Seventyfive,Seventysix,Seventyseven,Seventyeight,Seventynine,Eighty,Eightyone,Eightytwo,Eightythree,Eightyfour,Eightyfive,Eightysix,Eightyseven,Eightyeight,Eightynine,Ninety,Ninetyone,Ninetytwo,Ninetythree,Ninetyfour,Ninetyfive,Ninetysix,Ninetyseven,Ninetyeight,Ninetynine';
+
+
+			var lists = document.querySelectorAll( '#main ul' );
+
+			for( var i = 0; i < lists.length; i++ ) {
+				lists[i].innerHTML += '<li>' + items.split( ',' ).join( '</li><li>' ) + '</li>';
+
+				Stroll.bind( lists[i] );
+			}
+		</script>
+
+
+		<!-- Everything below this point is unrelated to the library -->
+
+		<script>
+		var _gaq = [['_setAccount', 'UA-15240703-1'], ['_trackPageview']];
+		(function(d, t) {
+		var g = d.createElement(t),
+		    s = d.getElementsByTagName(t)[0];
+		g.async = true;
+		g.src = ('https:' == location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.insertBefore(g, s);
+		})(document, 'script');
+		</script>
+		
+	</body>
+</html>
