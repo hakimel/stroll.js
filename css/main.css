@@ -427,4 +427,58 @@ ul {
 		        transform: translateX( -80% );
 	}
 
+/**
+ * Helix styles
+ */
+.helix {
+	-webkit-perspective: 600px;
+	   -moz-perspective: 600px;
+	    -ms-perspective: 600px;
+	     -o-perspective: 600px;
+	        perspective: 600px;
+
+	-webkit-perspective-origin: 50% 50%;
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	     -o-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+	.helix li {
+		-webkit-transition: all 600ms ease,
+							opacity 200ms ease;
+		   -moz-transition: all 600ms ease;
+		    -ms-transition: all 600ms ease,
+		    				opacity 200ms ease;
+		     -o-transition: all 600ms ease,
+		    				opacity 200ms ease;
+		        transition: all 600ms ease,
+		        			opacity 200ms ease;
+
+		-webkit-transform-origin: 50% 50%;
+		   -moz-transform-origin: 50% 50%;
+		    -ms-transform-origin: 50% 50%;
+		     -o-transform-origin: 50% 50%;
+		        transform-origin: 50% 50%;
+	}
+		.helix li.past {
+			opacity: 0;
+
+			-webkit-transform: rotateY( 180deg );
+			   -moz-transform: rotateY( 180deg );
+			    -ms-transform: rotateY( 180deg );
+			     -o-transform: rotateY( 180deg );
+			        transform: rotateY( 180deg );
+		}
+		.helix li.future {
+			opacity: 0;
+
+			-webkit-transform: rotateY( -180deg );
+			   -moz-transform: rotateY( -180deg );
+			    -ms-transform: rotateY( -180deg );
+			     -o-transform: rotateY( -180deg );
+			        transform: rotateY( -180deg );
+		}
+
+
 
