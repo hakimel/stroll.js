@@ -31,8 +31,8 @@ var Stroll = {
 
 		// one loop to get the offsets from the DOM
 		for( var i = 0, len = items.length; i < len; i++ ) {
-			items[i]._offsetTop = items[i].offsetTop
-			items[i]._offsetHeight = items[i].offsetHeight
+			items[i]._offsetTop = items[i].offsetTop;
+			items[i]._offsetHeight = items[i].offsetHeight;
 		}
 
 		return (function() {
@@ -47,28 +47,30 @@ var Stroll = {
 				var scrollTop = element.pageYOffset || element.scrollTop,
 					scrollBottom = scrollTop + listHeight;
 
-				// Quit if nothing changed.
-				if( scrollTop == element.lastTop ) return;
+				// Quit if nothing changed
+				if( scrollTop !== element.lastTop ) {
+					console.time('test');
+					element.lastTop = scrollTop;
 
-				element.lastTop = scrollTop;
+					// One loop to make our changes to the DOM
+					for( var i = 0, len = items.length; i < len; i++ ) {
+						var item = items[i];
 
-				// One loop to make our changes to the DOM
-				for( var i = 0, len = items.length; i < len; i++ ) {
-					var item = items[i];
-
-					// Above list viewport
-					if( item._offsetTop + item._offsetHeight < scrollTop ) {
-						item.classList.add( 'past' );
+						// Above list viewport
+						if( item._offsetTop + item._offsetHeight < scrollTop ) {
+							item.classList.add( 'past' );
+						}
+						// Below list viewport
+						else if( item._offsetTop > scrollBottom ) {
+							item.classList.add( 'future' );
+						}
+						// Inside of list viewport
+						else {
+							item.classList.remove( 'past' );
+							item.classList.remove( 'future' );
+						}
 					}
-					// Below list viewport
-					else if( item._offsetTop > scrollBottom ) {
-						item.classList.add( 'future' );
-					}
-					// Inside of list viewport
-					else {
-						item.classList.remove( 'past' );
-						item.classList.remove( 'future' );
-					}
+					console.timeEnd('test');
 				}
 			}
 
