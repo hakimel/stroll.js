@@ -22,7 +22,7 @@ window.requestAnimFrame = (function(){
 
 
 var Stroll = {
-	bind: function(element) {
+	bind: function( element ) {
 
 		var items = Array.prototype.slice.apply( element.children );
 
@@ -37,7 +37,7 @@ var Stroll = {
 
 		return (function() {
 
-			(function animloop(){
+			(function animloop() {
 				requestAnimFrame( animloop );
 				update();
 			})();
@@ -49,7 +49,6 @@ var Stroll = {
 
 				// Quit if nothing changed
 				if( scrollTop !== element.lastTop ) {
-					console.time('test');
 					element.lastTop = scrollTop;
 
 					// One loop to make our changes to the DOM
@@ -70,7 +69,6 @@ var Stroll = {
 							item.classList.remove( 'future' );
 						}
 					}
-					console.timeEnd('test');
 				}
 			}
 
