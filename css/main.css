@@ -579,5 +579,38 @@ ul {
 		        transform: translateX( -80% );
 	}
 
+/**
+ * Unzip styles
+ */
+.unzip li {
+	-webkit-transition: all 600ms cubic-bezier(0.390, 0.575, 0.565, 1.000);
+	   -moz-transition: all 600ms cubic-bezier(0.390, 0.575, 0.565, 1.000);
+	    -ms-transition: all 600ms cubic-bezier(0.390, 0.575, 0.565, 1.000);
+	     -o-transition: all 600ms cubic-bezier(0.390, 0.575, 0.565, 1.000);
+	        transition: all 600ms cubic-bezier(0.390, 0.575, 0.565, 1.000);
+
+	-webkit-transform-origin: 50% 0%;
+	   -moz-transform-origin: 50% 0%;
+	    -ms-transform-origin: 50% 0%;
+	     -o-transform-origin: 50% 0%;
+	        transform-origin: 50% 0%;
+}
+	.unzip li.past:nth-child(odd),
+	.unzip li.future:nth-child(odd) {
+		-webkit-transform: rotateY( 90deg );
+		   -moz-transform: rotateY( 90deg );
+		    -ms-transform: rotateY( 90deg );
+		     -o-transform: rotateY( 90deg );
+		        transform: rotateY( 90deg );
+	}
+	.unzip li.past:nth-child(even),
+	.unzip li.future:nth-child(even) {
+		-webkit-transform: rotateY( 90deg );
+		   -moz-transform: rotateY( 90deg );
+		    -ms-transform: rotateY( 90deg );
+		     -o-transform: rotateY( 90deg );
+		        transform: rotateY( 90deg );
+	}
+
 
 
