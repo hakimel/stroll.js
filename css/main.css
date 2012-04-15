@@ -580,4 +580,21 @@ ul {
 	}
 
 
+/**
+ * Fade styles
+ */
+.fade li {
+	-webkit-transition: opacity .35s ease-in-out;
+	   -moz-transition: opacity .35s ease-in-out;
+	    -ms-transition: opacity .35s ease-in-out;
+	     -o-transition: opacity .35s ease-in-out;
+	        transition: opacity .35s ease-in-out;
+}
+	.fade li.past {
+        opacity: 0;
+	}
+	.fade li.future {
+        opacity: 0;
+	}
+
 
