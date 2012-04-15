@@ -35,35 +35,6 @@
 
 	})();
 
-	/**
-	 * Binds one or multiple targets for scroll effects.
-	 * @param  {[type]} target [description]
-	 * @return {[type]}        [description]
-	 */
-	Stroll.bind = function( target ) {
-		// Selector
-		if( typeof target === 'string' ) {
-			var targets = document.querySelectorAll( target );
-
-			for( j = 0; j < targets.length; j++ ) {
-				bindElement( targets[j] );
-			}
-		}
-		// Array (jQuery)
-		else if( typeof target === 'object' && typeof target.length === 'number' ) {
-			for( j = 0; j < target.length; j++ ) {
-				bindElement( target[j] );
-			}
-		}
-		// Single element
-		else if( target.nodeName && target.nodeName === 'UL' ) {
-			bindElement( target );
-		}
-		else {
-			throw 'Stroll target was of unexpected type.';
-		}
-	};
-
 	function bindElement( element ) {
 		var items = Array.prototype.slice.apply( element.children );
 
@@ -107,6 +78,35 @@
 				}
 			}
 		} )
+	};
+
+	/**
+	 * Binds one or multiple targets for scroll effects.
+	 * @param  {[type]} target [description]
+	 * @return {[type]}        [description]
+	 */
+	Stroll.bind = function( target ) {
+		// Selector
+		if( typeof target === 'string' ) {
+			var targets = document.querySelectorAll( target );
+
+			for( j = 0; j < targets.length; j++ ) {
+				bindElement( targets[j] );
+			}
+		}
+		// Array (jQuery)
+		else if( typeof target === 'object' && typeof target.length === 'number' ) {
+			for( j = 0; j < target.length; j++ ) {
+				bindElement( target[j] );
+			}
+		}
+		// Single element
+		else if( target.nodeName && target.nodeName === 'UL' ) {
+			bindElement( target );
+		}
+		else {
+			throw 'Stroll target was of unexpected type.';
+		}
 	};
 
 	window.Stroll = Stroll;
