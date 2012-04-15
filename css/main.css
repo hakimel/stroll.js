@@ -131,6 +131,103 @@ ul {
 			        transform: rotateX( -80deg );
 		}
 
+/**
+ * Fly styles
+ */
+.fly {
+	-webkit-perspective: 400px;
+	   -moz-perspective: 400px;
+	    -ms-perspective: 400px;
+	     -o-perspective: 400px;
+	        perspective: 400px;
+
+	-webkit-perspective-origin: 50% 50%;
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	     -o-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+	.fly li {
+		-webkit-transition: all 600ms ease, opacity 300ms ease;
+		   -moz-transition: all 600ms ease;
+		    -ms-transition: all 600ms ease, opacity 300ms ease;
+		     -o-transition: all 600ms ease, opacity 300ms ease;
+		        transition: all 600ms ease, opacity 300ms ease;
+
+		-webkit-transform-origin: 50% 50% -50px;
+		   -moz-transform-origin: 50% 50% -50px;
+		    -ms-transform-origin: 50% 50% -50px;
+		     -o-transform-origin: 50% 50% -50px;
+		        transform-origin: 50% 50% -50px;
+	}
+		.fly li.past {
+			opacity: 0;
+
+			-webkit-transform: rotateX( 180deg );
+			   -moz-transform: rotateX( 180deg );
+			    -ms-transform: rotateX( 180deg );
+			     -o-transform: rotateX( 180deg );
+			        transform: rotateX( 180deg );
+		}
+		.fly li.future {
+			opacity: 0;
+
+			-webkit-transform: rotateX( -180deg );
+			   -moz-transform: rotateX( -180deg );
+			    -ms-transform: rotateX( -180deg );
+			     -o-transform: rotateX( -180deg );
+			        transform: rotateX( -180deg );
+		}
+
+/**
+ * Reverse fly styles
+ */
+.fly-reverse {
+	-webkit-perspective: 400px;
+	   -moz-perspective: 400px;
+	    -ms-perspective: 400px;
+	     -o-perspective: 400px;
+	        perspective: 400px;
+
+	-webkit-perspective-origin: 50% 50%;
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	     -o-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+	.fly-reverse li {
+		-webkit-transition: all 600ms ease, opacity 300ms ease;
+		   -moz-transition: all 600ms ease;
+		    -ms-transition: all 600ms ease, opacity 300ms ease;
+		     -o-transition: all 600ms ease, opacity 300ms ease;
+		        transition: all 600ms ease, opacity 300ms ease;
+
+		-webkit-transform-origin: 50% 50% -50px;
+		   -moz-transform-origin: 50% 50% -50px;
+		    -ms-transform-origin: 50% 50% -50px;
+		     -o-transform-origin: 50% 50% -50px;
+		        transform-origin: 50% 50% -50px;
+	}
+		.fly-reverse li.past {
+			opacity: 0;
+
+			-webkit-transform: rotateX( -180deg );
+			   -moz-transform: rotateX( -180deg );
+			    -ms-transform: rotateX( -180deg );
+			     -o-transform: rotateX( -180deg );
+			        transform: rotateX( -180deg );
+		}
+		.fly-reverse li.future {
+			opacity: 0;
+
+			-webkit-transform: rotateX( 180deg );
+			   -moz-transform: rotateX( 180deg );
+			    -ms-transform: rotateX( 180deg );
+			     -o-transform: rotateX( 180deg );
+			        transform: rotateX( 180deg );
+		}
 
 /**
  * 
