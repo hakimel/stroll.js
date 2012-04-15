@@ -261,20 +261,20 @@ ul {
  		        transform-origin: 0% 0%;
  	}
  		.skew li.past {
- 			-webkit-transform: skew( 0deg, 30deg );
- 			   -moz-transform: skew( 0deg, 30deg );
- 			    -ms-transform: skew( 0deg, 30deg );
- 			     -o-transform: skew( 0deg, 30deg );
- 			        transform: skew( 0deg, 30deg );
+ 			-webkit-transform: skewY( 30deg );
+ 			   -moz-transform: skewY( 30deg );
+ 			    -ms-transform: skewY( 30deg );
+ 			     -o-transform: skewY( 30deg );
+ 			        transform: skewY( 30deg );
  		}
  		.skew li.future {
  			z-index: 0;
 
- 			-webkit-transform: skew( 0deg, -30deg );
- 			   -moz-transform: skew( 0deg, -30deg );
- 			    -ms-transform: skew( 0deg, -30deg );
- 			     -o-transform: skew( 0deg, -30deg );
- 			        transform: skew( 0deg, -30deg );
+ 			-webkit-transform: skewY( -30deg );
+ 			   -moz-transform: skewY( -30deg );
+ 			    -ms-transform: skewY( -30deg );
+ 			     -o-transform: skewY( -30deg );
+ 			        transform: skewY( -30deg );
  		}
 
 
@@ -531,18 +531,18 @@ ul {
 		        transform-origin: 0% 0%;
 	}
 		.papercut li.past {
-			-webkit-transform: skew( 0deg, -30deg );
-			   -moz-transform: skew( 0deg, -30deg );
-			    -ms-transform: skew( 0deg, -30deg );
-			     -o-transform: skew( 0deg, -30deg );
-			        transform: skew( 0deg, -30deg );
+			-webkit-transform: skewY( -30deg );
+			   -moz-transform: skewY( -30deg );
+			    -ms-transform: skewY( -30deg );
+			     -o-transform: skewY( -30deg );
+			        transform: skewY( -30deg );
 		}
 		.papercut li.future {
-			-webkit-transform: skew( 0deg, 30deg );
-			   -moz-transform: skew( 0deg, 30deg );
-			    -ms-transform: skew( 0deg, 30deg );
-			     -o-transform: skew( 0deg, 30deg );
-			        transform: skew( 0deg, 30deg );
+			-webkit-transform: skewY( 30deg );
+			   -moz-transform: skewY( 30deg );
+			    -ms-transform: skewY( 30deg );
+			     -o-transform: skewY( 30deg );
+			        transform: skewY( 30deg );
 		}
 
 
