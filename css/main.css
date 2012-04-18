@@ -596,5 +596,32 @@ ul {
 	.fade li.future {
         opacity: 0;
 	}
+	
+
+/**
+ * Blur styles
+ */
+.blur li {
+	
+	-webkit-transition: all 1000ms ease,
+							opacity 1000ms ease;
+		   -moz-transition: all 1000ms ease;
+		    -ms-transition: all 1000ms ease,
+		    				opacity 1000ms ease;
+		     -o-transition: all 1000ms ease,
+		    				opacity 1000ms ease;
+		        transition: all 1000ms ease,
+		        			opacity 1000ms ease;
+}
+	.blur li.past {
+		color: transparent;
+        text-shadow: 0px 0px 5px #eee;
+	}
+	.blur li.future {
+		color: transparent;
+        text-shadow: 0px 0px 5px #eee;
+	}
+
+
 
 
