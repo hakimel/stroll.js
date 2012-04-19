@@ -640,7 +640,7 @@ ul {
 		.shrink li.past {
 			opacity: 0;
 
-			-webkit-transform: scale3d( 10,10,0 );
+			-webkit-transform: scale3d( 5,5,0 );
 			   -moz-transform: scale3d( 10,10,0 );
 			    -ms-transform: scale3d( 10,10,0 );
 			     -o-transform: scale3d( 10,10,0 );
@@ -650,7 +650,7 @@ ul {
 		.shrink li.future {
 			opacity: 0;
 			
-			-webkit-transform: scale3d( 10,10,0 );
+			-webkit-transform: scale3d( 5,5,0 );
 			   -moz-transform: scale3d( 10,10,0 );
 			    -ms-transform: scale3d( 10,10,0 );
 			     -o-transform: scale3d( 10,10,0 );
