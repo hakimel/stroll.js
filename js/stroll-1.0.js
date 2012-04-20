@@ -1,16 +1,9 @@
 /**
- * Applies descriptive classes to list items based on their 
- * position relative to their parent lists' scroll state.
+ * stroll.js v1.0 - CSS scrolling effects
+ * http://lab.hakim.se/scroll-effects
+ * MIT licensed
  * 
- * Demo: http://lab.hakim.se/scroll-effects/
- * 
- * API:
- * - Stroll.bind( selector/element/array );
- * - Stroll.unbind( selector/element/array );
- * 
- * @author Hakim El Hattab | http://hakim.se
- * @author Paul Irish | http://paulirish.com
- * @author Felix Gnass | http://fgnass.github.com
+ * Created by Hakim El Hattab, http://hakim.se
  */
 
 (function(){
@@ -34,13 +27,20 @@
 		}
 	}
 
+	/**
+	 * Starts monitoring a list and applies classes to each of 
+	 * its contained elements based on its position relative to 
+	 * the list's viewport.
+	 * 
+	 * @param {HTMLElement} list 
+	 */
 	function add( list ) {
 		// Only allow ul/ol
 		if( !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
 			return false;
 		}
 
-		// TODO A current limitation is that there must be at least one
+		// TODO: A current limitation is that there must be at least one
 		// item in the list when binding.
 		
 		var items = Array.prototype.slice.apply( list.children );
@@ -96,6 +96,10 @@
 		}
 	};
 
+	/**
+	 * Stops monitoring a list element and removes any classes 
+	 * that were applied to its list items.
+	 */
 	function remove( list ) {
 		for( var i = 0; i < lists.length; i++ ) {
 			if( lists[i].domElement == list ) {
