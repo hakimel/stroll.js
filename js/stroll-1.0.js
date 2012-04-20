@@ -70,17 +70,24 @@
 					// One loop to make our changes to the DOM
 					for( var i = 0, len = items.length; i < len; i++ ) {
 						var item = items[i];
+						var itemClass = item.className;
 
 						// Above list viewport
 						if( item._offsetTop + item._offsetHeight < scrollTop ) {
-							item.classList.add( 'past' );
+							// Exclusion via string matching improves performance
+							if( itemClass.indexOf( 'past' ) === -1 ) {
+								item.classList.add( 'past' );
+							}
 						}
 						// Below list viewport
 						else if( item._offsetTop > scrollBottom ) {
-							item.classList.add( 'future' );
+							// Exclusion via string matching improves performance
+							if( itemClass.indexOf( 'future' ) === -1 ) {
+								item.classList.add( 'future' );
+							}
 						}
 						// Inside of list viewport
-						else {
+						else if( item.classList.length ) {
 							item.classList.remove( 'past' );
 							item.classList.remove( 'future' );
 						}
