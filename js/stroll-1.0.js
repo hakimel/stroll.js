@@ -35,7 +35,7 @@
 	 */
 	function add( list ) {
 		// Don't allow dupes, only allow ul/ol
-		if( exists( list ) || !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
+		if( contains( list ) || !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
 			return false;
 		}
 
@@ -129,13 +129,23 @@
 		}
 	};
 
-	function exists( list ) {
+	/**
+	 * Checks if the specified element has already been bound.
+	 */
+	function contains( list ) {
 		for( var i = 0, len = lists.length; i < len; i++ ) {
 			if( lists[i].domElement == list ) {
 				return true;
 			}
 		}
 		return false;
+	};
+
+	/**
+	 * Checks if the client is capable of running the library.
+	 */
+	function isCapable() {
+		return !!document.body.classList;
 	};
 
 	/**
@@ -178,14 +188,18 @@
 		 * Binds one or more lists for scroll effects.
 		 */
 		bind: function( target ) {
-			batch( target, add );
+			if( isCapable() ) {
+				batch( target, add );
+			}
 		},
 
 		/**
 		 * Unbinds one or more lists from scroll effects.
 		 */
 		unbind: function( target ) {
-			batch( target, remove );
+			if( isCapable() ) {
+				batch( target, remove );
+			}
 		}
 	};
 
