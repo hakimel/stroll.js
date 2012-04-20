@@ -87,7 +87,7 @@
 							}
 						}
 						// Inside of list viewport
-						else if( item.classList.length ) {
+						else if( itemClass.length ) {
 							item.classList.remove( 'past' );
 							item.classList.remove( 'future' );
 						}
