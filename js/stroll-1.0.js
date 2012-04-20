@@ -5,7 +5,6 @@
  * 
  * Created by Hakim El Hattab, http://hakim.se
  */
-
 (function(){
 
 	// All of the lists that are currently bound
@@ -35,8 +34,8 @@
 	 * @param {HTMLElement} list 
 	 */
 	function add( list ) {
-		// Only allow ul/ol
-		if( !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
+		// Don't allow dupes, only allow ul/ol
+		if( exists( list ) || !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
 			return false;
 		}
 
@@ -128,6 +127,15 @@
 		if( lists.length === 0 ) {
 			active = false;
 		}
+	};
+
+	function exists( list ) {
+		for( var i = 0, len = lists.length; i < len; i++ ) {
+			if( lists[i].domElement == list ) {
+				return true;
+			}
+		}
+		return false;
 	};
 
 	/**
