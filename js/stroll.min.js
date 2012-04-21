@@ -1,5 +1,5 @@
 /*!
- * stroll.js - CSS scroll effects
+ * stroll.js 1.0 - CSS scroll effects
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
  * 
