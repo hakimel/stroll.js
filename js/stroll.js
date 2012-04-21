@@ -1,11 +1,13 @@
 /*!
- * stroll.js - CSS scrolling effects
+ * stroll.js - CSS scroll effects
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
  * 
  * Created by Hakim El Hattab, http://hakim.se
  */
 (function(){
+
+	"use strict";
 
 	// All of the lists that are currently bound
 	var lists = [];
@@ -58,14 +60,14 @@
 			domElement: list,
 
 			// Apply past/future classes to list items outside of the viewport
-			update: function() {
+			update: function( force ) {
 				var scrollTop = list.pageYOffset || list.scrollTop,
 					scrollBottom = scrollTop + listHeight;
 
 				// Quit if nothing changed
 				if( scrollTop !== list.lastTop ) {
 					list.lastTop = scrollTop;
-
+					
 					// One loop to make our changes to the DOM
 					for( var i = 0, len = items.length; i < len; i++ ) {
 						var item = items[i];
@@ -142,13 +144,6 @@
 	};
 
 	/**
-	 * Checks if the client is capable of running the library.
-	 */
-	function isCapable() {
-		return !!document.body.classList;
-	};
-
-	/**
 	 * Calls 'method' for each DOM element discovered in 
 	 * 'target'.
 	 * 
@@ -157,18 +152,20 @@
 	 * @param method A function to call for each element target
 	 */
 	function batch( target, method ) {
+		var i, len;
+
 		// Selector
 		if( typeof target === 'string' ) {
 			var targets = document.querySelectorAll( target );
 
-			for( j = 0; j < targets.length; j++ ) {
-				method.call( null, targets[j] );
+			for( i = 0, len = targets.length; i < len; i++ ) {
+				method.call( null, targets[i] );
 			}
 		}
 		// Array (jQuery)
 		else if( typeof target === 'object' && typeof target.length === 'number' ) {
-			for( j = 0; j < target.length; j++ ) {
-				method.call( null, target[j] );
+			for( i = 0, len = target.length; i < len; i++ ) {
+				method.call( null, target[i] );
 			}
 		}
 		// Single element
@@ -178,6 +175,13 @@
 		else {
 			throw 'Stroll target was of unexpected type.';
 		}
+	};
+
+	/**
+	 * Checks if the client is capable of running the library.
+	 */
+	function isCapable() {
+		return !!document.body.classList;
 	};
 
 	/**
@@ -203,15 +207,15 @@
 		}
 	};
 
-})();
+	window.requestAnimFrame = (function(){
+	   return  window.requestAnimationFrame       ||
+	 		  window.webkitRequestAnimationFrame ||
+	 		  window.mozRequestAnimationFrame    ||
+	 		  window.oRequestAnimationFrame      ||
+	 		  window.msRequestAnimationFrame     ||
+	 		  function( callback ){
+	 			window.setTimeout(callback, 1000 / 60);
+	 		  };
+	 })();
 
-window.requestAnimFrame = (function(){
-   return  window.requestAnimationFrame       ||
- 		  window.webkitRequestAnimationFrame ||
- 		  window.mozRequestAnimationFrame    ||
- 		  window.oRequestAnimationFrame      ||
- 		  window.msRequestAnimationFrame     ||
- 		  function( callback ){
- 			window.setTimeout(callback, 1000 / 60);
- 		  };
- })();
+})();
