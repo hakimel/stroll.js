@@ -41,8 +41,7 @@
 			return false;
 		}
 
-		// TODO: A current limitation is that there must be at least one
-		// item in the list when binding.
+		// TODO: Create and measure element if the list is empty.
 		
 		var items = Array.prototype.slice.apply( list.children );
 
@@ -102,11 +101,13 @@
 			active = true;
 			refresh();
 		}
-	};
+	}
 
 	/**
 	 * Stops monitoring a list element and removes any classes 
 	 * that were applied to its list items.
+	 * 
+	 * @param {HTMLElement} list 
 	 */
 	function remove( list ) {
 		for( var i = 0; i < lists.length; i++ ) {
@@ -129,7 +130,7 @@
 		if( lists.length === 0 ) {
 			active = false;
 		}
-	};
+	}
 
 	/**
 	 * Checks if the specified element has already been bound.
@@ -141,7 +142,7 @@
 			}
 		}
 		return false;
-	};
+	}
 
 	/**
 	 * Calls 'method' for each DOM element discovered in 
@@ -175,14 +176,14 @@
 		else {
 			throw 'Stroll target was of unexpected type.';
 		}
-	};
+	}
 
 	/**
 	 * Checks if the client is capable of running the library.
 	 */
 	function isCapable() {
 		return !!document.body.classList;
-	};
+	}
 
 	/**
 	 * Public API
@@ -205,7 +206,7 @@
 				batch( target, remove );
 			}
 		}
-	};
+	}
 
 	window.requestAnimFrame = (function(){
 	   return  window.requestAnimationFrame       ||
@@ -216,6 +217,6 @@
 	 		  function( callback ){
 	 			window.setTimeout(callback, 1000 / 60);
 	 		  };
-	 })();
+	 })()
 
 })();
