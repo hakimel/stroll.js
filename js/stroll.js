@@ -188,7 +188,7 @@
 	/**
 	 * Public API
 	 */
-	window.Stroll = {
+	window.stroll = {
 		/**
 		 * Binds one or more lists for scroll effects.
 		 */
