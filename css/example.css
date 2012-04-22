@@ -4,6 +4,7 @@
 html, body {
 	margin: 0px;
 	padding: 0px;
+	line-height: 1;
 }
 
 body {
@@ -47,7 +48,6 @@ small {
 	font-size: 14px;
 	margin-left: 5px;
 }
-
 
 /**
  * List used for the demo page
