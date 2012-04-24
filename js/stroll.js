@@ -36,9 +36,14 @@
 	 * @param {HTMLElement} list 
 	 */
 	function add( list ) {
-		// Don't allow dupes, only allow ul/ol
-		if( contains( list ) || !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
+		// Only allow ul/ol
+		if( !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
 			return false;
+		}
+		// Delete duplicates (but continue and re-bind this list to get the 
+		// latest properties and list items)
+		else if( contains( list ) ) {
+			remove( list );
 		}
 
 		// TODO: Create and measure element if the list is empty.
