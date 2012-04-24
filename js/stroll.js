@@ -1,5 +1,5 @@
 /*!
- * stroll.js 1.0 - CSS scroll effects
+ * stroll.js 1.1 - CSS scroll effects
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
  * 
@@ -8,6 +8,10 @@
 (function(){
 
 	"use strict";
+
+	// When a list is configured as 'live', this is how frequently 
+	// the DOM will be polled for changes
+	var LIVE_INTERVAL = 500;
 
 	// All of the lists that are currently bound
 	var lists = [];
@@ -33,49 +37,61 @@
 	 * its contained elements based on its position relative to 
 	 * the list's viewport.
 	 * 
-	 * @param {HTMLElement} list 
-	 * @param {Object} options 
+	 * @param {HTMLElement} element 
+	 * @param {Object} options Additional arguments;
+	 * 	- live; Flags if the DOM should be repeatedly checked for changes
+	 * 			repeatedly. Useful if the list contents is changing. Use 
+	 * 			scarcely as it has an impact on performance.
 	 */
-	function add( list, options ) {
+	function add( element, options ) {
 		// Only allow ul/ol
-		if( !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
+		if( !element.nodeName || /^(ul|li)$/i.test( element.nodeName ) === false ) {
 			return false;
 		}
 		// Delete duplicates (but continue and re-bind this list to get the 
 		// latest properties and list items)
-		else if( contains( list ) ) {
-			remove( list );
+		else if( contains( element ) ) {
+			remove( element );
 		}
 
-		// TODO: Create and measure element if the list is empty.
-		
-		var items = Array.prototype.slice.apply( list.children );
+		var list = {
+			element: element,
 
-		// Caching some heights so we don't need to go back to the DOM so much
-		var listHeight = list.offsetHeight;
+			/** 
+			 * Fetches the latest properties from the DOM to ensure that 
+			 * this list is in sync with its contents. 
+			 */
+			sync: function() {
+				this.items = Array.prototype.slice.apply( element.children );
 
-		// One loop to get the offsets from the DOM
-		for( var i = 0, len = items.length; i < len; i++ ) {
-			items[i]._offsetTop = items[i].offsetTop;
-			items[i]._offsetHeight = items[i].offsetHeight;
-		}
+				// Caching some heights so we don't need to go back to the DOM so much
+				this.listHeight = element.offsetHeight;
 
-		// Add this element to the collection
-		lists.push( {
-			domElement: list,
+				// One loop to get the offsets from the DOM
+				for( var i = 0, len = this.items.length; i < len; i++ ) {
+					var item = this.items[i];
+					item._offsetTop = item.offsetTop;
+					item._offsetHeight = item.offsetHeight;
+				}
 
-			// Apply past/future classes to list items outside of the viewport
+				// Force an update
+				this.update( true );
+			},
+
+			/** 
+			 * Apply past/future classes to list items outside of the viewport
+			 */
 			update: function( force ) {
-				var scrollTop = list.pageYOffset || list.scrollTop,
-					scrollBottom = scrollTop + listHeight;
+				var scrollTop = element.pageYOffset || element.scrollTop,
+					scrollBottom = scrollTop + this.listHeight;
 
 				// Quit if nothing changed
-				if( scrollTop !== this.lastTop ) {
+				if( scrollTop !== this.lastTop || force ) {
 					this.lastTop = scrollTop;
 					
 					// One loop to make our changes to the DOM
-					for( var i = 0, len = items.length; i < len; i++ ) {
-						var item = items[i];
+					for( var i = 0, len = this.items.length; i < len; i++ ) {
+						var item = this.items[i];
 						var itemClass = item.className;
 
 						// Above list viewport
@@ -99,8 +115,35 @@
 						}
 					}
 				}
+			},
+
+			/**
+			 * Cleans up after this list and disposes of it.
+			 */
+			destroy: function() {
+				clearInterval( this.syncInterval );
+
+				for( var j = 0, len = this.items.length; j < len; j++ ) {
+					var item = this.items[j];
+
+					item.classList.remove( 'past' );
+					item.classList.remove( 'future' );
+				}
 			}
-		} );
+		};
+
+		// Handle options
+		if( options && options.live ) {
+			list.syncInterval = setInterval( function() {
+				list.sync.call( list );
+			}, LIVE_INTERVAL );
+		}
+
+		// Synchronize the list with the DOM
+		list.sync();
+
+		// Add this element to the collection
+		lists.push( list );
 
 		// Start refreshing if this was the first list to be added
 		if( lists.length === 1 ) {
@@ -113,22 +156,16 @@
 	 * Stops monitoring a list element and removes any classes 
 	 * that were applied to its list items.
 	 * 
-	 * @param {HTMLElement} list 
+	 * @param {HTMLElement} element 
 	 */
-	function remove( list ) {
+	function remove( element ) {
 		for( var i = 0; i < lists.length; i++ ) {
-			if( lists[i].domElement == list ) {
+			var list = lists[i];
+
+			if( list.element == element ) {
+				list.destroy();
 				lists.splice( i, 1 );
 				i--;
-
-				var items = Array.prototype.slice.apply( list.children );
-
-				for( var j = 0, len = items.length; j < len; j++ ) {
-					var item = items[j];
-
-					item.classList.remove( 'past' );
-					item.classList.remove( 'future' );
-				}
 			}
 		}
 
@@ -141,9 +178,9 @@
 	/**
 	 * Checks if the specified element has already been bound.
 	 */
-	function contains( list ) {
+	function contains( element ) {
 		for( var i = 0, len = lists.length; i < len; i++ ) {
-			if( lists[i].domElement == list ) {
+			if( lists[i].element == element ) {
 				return true;
 			}
 		}
@@ -198,7 +235,7 @@
 		/**
 		 * Binds one or more lists for scroll effects.
 		 * 
-		 * @param {Object} options
+		 * @see #add()
 		 */
 		bind: function( target, options ) {
 			if( isCapable() ) {
@@ -208,6 +245,8 @@
 
 		/**
 		 * Unbinds one or more lists from scroll effects.
+		 * 
+		 * @see #remove()
 		 */
 		unbind: function( target ) {
 			if( isCapable() ) {
