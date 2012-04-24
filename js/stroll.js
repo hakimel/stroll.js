@@ -34,8 +34,9 @@
 	 * the list's viewport.
 	 * 
 	 * @param {HTMLElement} list 
+	 * @param {Object} options 
 	 */
-	function add( list ) {
+	function add( list, options ) {
 		// Only allow ul/ol
 		if( !list.nodeName || /^(ul|li)$/i.test( list.nodeName ) === false ) {
 			return false;
@@ -69,8 +70,8 @@
 					scrollBottom = scrollTop + listHeight;
 
 				// Quit if nothing changed
-				if( scrollTop !== list.lastTop ) {
-					list.lastTop = scrollTop;
+				if( scrollTop !== this.lastTop ) {
+					this.lastTop = scrollTop;
 					
 					// One loop to make our changes to the DOM
 					for( var i = 0, len = items.length; i < len; i++ ) {
@@ -157,7 +158,7 @@
 	 * jQuery object / single UL element
 	 * @param method A function to call for each element target
 	 */
-	function batch( target, method ) {
+	function batch( target, method, options ) {
 		var i, len;
 
 		// Selector
@@ -165,18 +166,18 @@
 			var targets = document.querySelectorAll( target );
 
 			for( i = 0, len = targets.length; i < len; i++ ) {
-				method.call( null, targets[i] );
+				method.call( null, targets[i], options );
 			}
 		}
 		// Array (jQuery)
 		else if( typeof target === 'object' && typeof target.length === 'number' ) {
 			for( i = 0, len = target.length; i < len; i++ ) {
-				method.call( null, target[i] );
+				method.call( null, target[i], options );
 			}
 		}
 		// Single element
 		else if( target.nodeName ) {
-			method.call( null, target );
+			method.call( null, target, options );
 		}
 		else {
 			throw 'Stroll target was of unexpected type.';
@@ -196,10 +197,12 @@
 	window.stroll = {
 		/**
 		 * Binds one or more lists for scroll effects.
+		 * 
+		 * @param {Object} options
 		 */
-		bind: function( target ) {
+		bind: function( target, options ) {
 			if( isCapable() ) {
-				batch( target, add );
+				batch( target, add, options );
 			}
 		},
 
