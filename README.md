@@ -19,6 +19,14 @@ stroll.bind( document.getElementById( 'some-list' ) );
 stroll.bind( $( '#main .some-list' ) );
 ```
 
+You can provide an additional parameter with more options:
+
+```
+// Makes stroll.js monitor changes to the DOM (like adding or resizing items). 
+// This is taxing on performance so use scarcely. Defaults to false.
+stroll.bind( '#main ul', { live: true } );
+```
+
 To disable the effect on an already bound list you can use the unbind method:
 
 ```
