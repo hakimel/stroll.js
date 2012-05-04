@@ -53,9 +53,40 @@
 		else if( contains( element ) ) {
 			remove( element );
 		}
+		var velocity = 0;
 
 		var list = {
 			element: element,
+
+			startY: 0,
+			endY: 0,
+
+			bind: function() {
+				element.style.overflow = 'hidden';
+				element.addEventListener( 'touchstart', this.onTouchStart, false );
+				element.addEventListener( 'touchmove', this.onTouchMove, false );
+				element.addEventListener( 'touchend', this.onTouchEnd, false );
+			},
+
+			onTouchStart: function( event ) {
+				event.preventDefault();
+				if( event.touches.length === 1 ) {
+					this.startY = event.touches[0].clientY;
+				}
+			},
+
+			onTouchMove: function( event ) {
+				if( event.touches.length === 1 ) {
+					this.endY = event.touches[0].clientY;
+				}
+			},
+
+			onTouchEnd: function( event ) {
+				// if( event.touches.length === 1 ) {
+					velocity = ( this.endY - this.startY );
+					// console.log(velocity);
+				// }
+			},
 
 			/** 
 			 * Fetches the latest properties from the DOM to ensure that 
@@ -82,8 +113,18 @@
 			 * Apply past/future classes to list items outside of the viewport
 			 */
 			update: function( force ) {
-				var scrollTop = element.pageYOffset || element.scrollTop,
-					scrollBottom = scrollTop + this.listHeight;
+				if( velocity ) {
+					// console.log(( this.items[0].offsetTop + velocity ) + 'px');
+					this.items[0].style.marginTop = ( this.items[0].offsetTop + velocity ) + 'px';
+				}
+
+				var scrollTop = element.pageYOffset || element.scrollTop;
+				scrollTop = parseFloat( this.items[0].style.marginTop );
+
+				var scrollBottom = scrollTop + this.listHeight;
+
+				velocity *= 0.92;
+				if( velocity < 0.1 ) velocity = 0;
 
 				// Quit if nothing changed
 				if( scrollTop !== this.lastTop || force ) {
@@ -141,6 +182,7 @@
 
 		// Synchronize the list with the DOM
 		list.sync();
+		list.bind();
 
 		// Add this element to the collection
 		lists.push( list );
