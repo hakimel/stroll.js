@@ -57,20 +57,22 @@
 
 		var list = {
 			element: element,
+			wrapper: document.querySelector( '.wrapper' ),
 
 			startY: 0,
 			endY: 0,
 
 			bind: function() {
-				element.style.overflow = 'hidden';
-				element.addEventListener( 'touchstart', this.onTouchStart, false );
-				element.addEventListener( 'touchmove', this.onTouchMove, false );
-				element.addEventListener( 'touchend', this.onTouchEnd, false );
+				this.wrapper.style.overflow = 'hidden';
+				this.wrapper.addEventListener( 'touchstart', this.onTouchStart, false );
+				this.wrapper.addEventListener( 'touchmove', this.onTouchMove, false );
+				this.wrapper.addEventListener( 'touchend', this.onTouchEnd, false );
 			},
 
 			onTouchStart: function( event ) {
 				event.preventDefault();
 				if( event.touches.length === 1 ) {
+					velocity = 0;
 					this.startY = event.touches[0].clientY;
 				}
 			},
@@ -82,10 +84,10 @@
 			},
 
 			onTouchEnd: function( event ) {
-				// if( event.touches.length === 1 ) {
-					velocity = ( this.endY - this.startY );
-					// console.log(velocity);
-				// }
+				velocity = ( this.endY - this.startY ) / 10;
+
+				this.startY = 0;
+				this.endY = 0;
 			},
 
 			/** 
@@ -96,7 +98,7 @@
 				this.items = Array.prototype.slice.apply( element.children );
 
 				// Caching some heights so we don't need to go back to the DOM so much
-				this.listHeight = element.offsetHeight;
+				this.listHeight = this.wrapper.offsetHeight;
 
 				// One loop to get the offsets from the DOM
 				for( var i = 0, len = this.items.length; i < len; i++ ) {
@@ -113,18 +115,24 @@
 			 * Apply past/future classes to list items outside of the viewport
 			 */
 			update: function( force ) {
+				var scrollTop = ( parseFloat( this.element.style.top ) || 0 ) + velocity;
+
 				if( velocity ) {
-					// console.log(( this.items[0].offsetTop + velocity ) + 'px');
-					this.items[0].style.marginTop = ( this.items[0].offsetTop + velocity ) + 'px';
+					this.element.style.top = scrollTop + 'px';
 				}
 
-				var scrollTop = element.pageYOffset || element.scrollTop;
-				scrollTop = parseFloat( this.items[0].style.marginTop );
+				// var scrollTop = element.pageYOffset || element.scrollTop;
+
+				if( this.startY || this.endY ) {
+
+				}
+
+				scrollTop = -scrollTop;
 
 				var scrollBottom = scrollTop + this.listHeight;
 
-				velocity *= 0.92;
-				if( velocity < 0.1 ) velocity = 0;
+				velocity *= 0.97;
+				if( Math.abs(velocity) < 0.1 ) velocity = 0;
 
 				// Quit if nothing changed
 				if( scrollTop !== this.lastTop || force ) {
