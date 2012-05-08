@@ -13,6 +13,8 @@
 	// the DOM will be polled for changes
 	var LIVE_INTERVAL = 500;
 
+	var IS_TOUCH_DEVICE = !!( 'ontouchstart' in window );
+
 	// All of the lists that are currently bound
 	var lists = [];
 
@@ -55,7 +57,7 @@
 		}
 		var velocity = 0;
 
-		var list = new TouchList( element );
+		var list = IS_TOUCH_DEVICE ? new TouchList( element ) : new List( element );
 
 		// Handle options
 		if( options && options.live ) {
@@ -240,33 +242,70 @@
 	 */
 	function TouchList( element ) {
 		this.element = element;
-		this.wrapper = document.querySelector( '.wrapper' );
+		this.element.style.overflow = 'hidden';
 
+		this.wrapper = document.createElement( 'div' );
+		this.wrapper.style.position = 'relative';
+		this.wrapper.style.width = '100%';
+		// this.wrapper.style.height = '100%';
+		// this.wrapper.style.overflow = 'visible';
+		
+		var items = Array.prototype.slice.apply( this.element.children );
+
+		for( var i = 0, len = items.length; i < len; i++ ) {
+			this.wrapper.appendChild( items[i] );
+		}
+
+		this.element.appendChild( this.wrapper );
+
+		// Insert the wrapper before the element
+		// this.element.parentNode.insertBefore( this.wrapper, this.element );
+
+		// Inject the element into the wrapper
+		// this.wrapper.appendChild( this.element );
+
+		this.lastTop = 0
 		this.startY = 0;
 		this.endY = 0;
 		this.velocity = 0;
 	}
 	TouchList.prototype = new List();
 
-	TouchList.prototype.sync = function() {
-		List.prototype.sync.call( this );
+	/** 
+	 * Fetches the latest properties from the DOM to ensure that 
+	 * this list is in sync with its contents. 
+	 */
+	List.prototype.sync = function() {
+		this.items = Array.prototype.slice.apply( this.wrapper.children );
+
+		// Caching some heights so we don't need to go back to the DOM so much
+		this.listHeight = this.element.offsetHeight;
+
+		// One loop to get the offsets from the DOM
+		for( var i = 0, len = this.items.length; i < len; i++ ) {
+			var item = this.items[i];
+			item._offsetTop = item.offsetTop;
+			item._offsetHeight = item.offsetHeight;
+		}
+
+		// Force an update
+		this.update( true );
+
 		this.bind();
 	}
 
 	TouchList.prototype.bind = function() {
 		var scope = this;
-
-		this.wrapper.style.overflow = 'hidden';
 		
-		this.wrapper.addEventListener( 'touchstart', function( event ) {
+		this.element.addEventListener( 'touchstart', function( event ) {
 			scope.onTouchStart( event );
 		}, false );
 
-		this.wrapper.addEventListener( 'touchmove', function( event ) {
+		this.element.addEventListener( 'touchmove', function( event ) {
 			scope.onTouchMove( event );
 		}, false );
 
-		this.wrapper.addEventListener( 'touchend', function( event ) {
+		this.element.addEventListener( 'touchend', function( event ) {
 			scope.onTouchEnd( event );
 		}, false );
 	}
@@ -297,17 +336,17 @@
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	TouchList.prototype.update = function( force ) {
-		var scrollTop = ( parseFloat( this.element.style.top ) || 0 ) + this.velocity;
+		var scrollTop = ( parseFloat( this.wrapper.style.top ) || 0 ) + this.velocity;
 
 		if( this.velocity ) {
-			this.element.style.top = scrollTop + 'px';
+			this.wrapper.style.top = scrollTop + 'px';
 		}
+		
+		// var scrollTop = this.lastTop - this.velocity;
 
-		// var scrollTop = element.pageYOffset || element.scrollTop;
-
-		if( this.startY || this.endY ) {
-
-		}
+		// if( this.velocity ) {
+		// 	this.element.scrollTop = scrollTop;
+		// }
 
 		scrollTop = -scrollTop;
 

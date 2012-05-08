@@ -17,32 +17,18 @@
 		<link rel="stylesheet" href="css/stroll.css">
 
 		<style>
-			.wrapper {
-				position: relative;
-				width: 100%; 
-				height: 300px;
-				overflow: hidden;
-				/*-webkit-overflow-scrolling: touch; */
-			}
 			ul {
 				position: relative;
 				width: 100%; 
-				height: 100%;
-				overflow: visible;
+				height: 360px;
+				overflow: hidden;
 				/*-webkit-overflow-scrolling: touch; */
-
-				-webkit-perspective: 400px;
-				   -moz-perspective: 400px;
-				    -ms-perspective: 400px;
-				     -o-perspective: 400px;
-				        perspective: 400px;
 			}
 			ul li {
-				-webkit-transform: translateZ( 0px );
-				   -moz-transform: translateZ( 0px );
-				    -ms-transform: translateZ( 0px );
-				     -o-transform: translateZ( 0px );
-				        transform: translateZ( 0px );
+				-webkit-transform: translate3d(0,0,0);
+			}
+			div {
+				-webkit-transform: translate3d(0,0,0);
 			}
 		</style>
 	</head>
@@ -59,18 +45,16 @@
 			</div>
 		</header> -->
 		
-		<div class="wrapper">
-			<ul class="helix">
-				<li>One</li><li>Two</li><li>Three</li><li>Four</li><li>Five</li><li>Six</li><li>Seven</li><li>Eight</li><li>Nine</li><li>Ten</li><li>Eleven</li><li>Twelve</li><li>Thirteen</li><li>Fourteen</li><li>Fifteen</li><li>Sixteen</li><li>Seventeen</li><li>Eighteen</li><li>Nineteen</li><li>Twenty</li><li>Twentyone</li><li>Twentytwo</li><li>Twentythree</li><li>Twentyfour</li><li>Twentyfive</li><li>Twentysize</li><li>Twentyseven</li><li>Twentyeight</li><li>Twentynine</li><li>Thirty</li><li>Thirtyone</li><li>Thirtytwo</li><li>Thirtythree</li><li>Thirtyfour</li><li>Thirtyfive</li><li>Thirtysize</li><li>Thirtyseven</li><li>Thirtyeight</li><li>Thirtynine</li><li>Forty</li><li>Fortyone</li><li>Fortytwo</li><li>Fortythree</li><li>Fortyfour</li><li>Fortyfive</li><li>Fortysix</li><li>Fortyseven</li><li>Fortyeight</li><li>Fortynine</li><li>Fifty</li><li>Fiftyone</li><li>Fiftytwo</li><li>Fiftythree</li><li>Fiftyfour</li><li>Fiftyfive</li><li>Fiftysix</li><li>Fiftyseven</li><li>Fiftyeight</li><li>Fiftynine</li><li>Sixty</li><li>Sixtyone</li><li>Sixtytwo</li><li>Sixtythree</li><li>Sixtyfour</li><li>Sixtyfive</li><li>Sixtysix</li><li>Sixtyseven</li><li>Sixtyeight</li><li>Sixtynine</li><li>Seventy</li><li>Seventyone</li><li>Seventytwo</li><li>Seventythree</li><li>Seventyfour</li><li>Seventyfive</li><li>Seventysix</li><li>Seventyseven</li><li>Seventyeight</li><li>Seventynine</li><li>Eighty</li><li>Eightyone</li><li>Eightytwo</li><li>Eightythree</li><li>Eightyfour</li><li>Eightyfive</li><li>Eightysix</li><li>Eightyseven</li><li>Eightyeight</li><li>Eightynine</li><li>Ninety</li><li>Ninetyone</li><li>Ninetytwo</li><li>Ninetythree</li><li>Ninetyfour</li><li>Ninetyfive</li><li>Ninetysix</li><li>Ninetyseven</li><li>Ninetyeight</li><li>Ninetynine</li>
-			</ul>
-		</div>
+		<ul class="helix">
+			<li>One</li><li>Two</li><li>Three</li><li>Four</li><li>Five</li><li>Six</li><li>Seven</li><li>Eight</li><li>Nine</li><li>Ten</li><li>Eleven</li><li>Twelve</li><li>Thirteen</li><li>Fourteen</li><li>Fifteen</li><li>Sixteen</li><li>Seventeen</li><li>Eighteen</li><li>Nineteen</li><li>Twenty</li><li>Twentyone</li><li>Twentytwo</li><li>Twentythree</li><li>Twentyfour</li><li>Twentyfive</li><li>Twentysize</li><li>Twentyseven</li><li>Twentyeight</li><li>Twentynine</li><li>Thirty</li><li>Thirtyone</li><li>Thirtytwo</li><li>Thirtythree</li><li>Thirtyfour</li><li>Thirtyfive</li><li>Thirtysize</li><li>Thirtyseven</li><li>Thirtyeight</li><li>Thirtynine</li><li>Forty</li><li>Fortyone</li><li>Fortytwo</li><li>Fortythree</li><li>Fortyfour</li><li>Fortyfive</li><li>Fortysix</li><li>Fortyseven</li><li>Fortyeight</li><li>Fortynine</li><li>Fifty</li><li>Fiftyone</li><li>Fiftytwo</li><li>Fiftythree</li><li>Fiftyfour</li><li>Fiftyfive</li><li>Fiftysix</li><li>Fiftyseven</li><li>Fiftyeight</li><li>Fiftynine</li><li>Sixty</li><li>Sixtyone</li><li>Sixtytwo</li><li>Sixtythree</li><li>Sixtyfour</li><li>Sixtyfive</li><li>Sixtysix</li><li>Sixtyseven</li><li>Sixtyeight</li><li>Sixtynine</li><li>Seventy</li><li>Seventyone</li><li>Seventytwo</li><li>Seventythree</li><li>Seventyfour</li><li>Seventyfive</li><li>Seventysix</li><li>Seventyseven</li><li>Seventyeight</li><li>Seventynine</li><li>Eighty</li><li>Eightyone</li><li>Eightytwo</li><li>Eightythree</li><li>Eightyfour</li><li>Eightyfive</li><li>Eightysix</li><li>Eightyseven</li><li>Eightyeight</li><li>Eightynine</li><li>Ninety</li><li>Ninetyone</li><li>Ninetytwo</li><li>Ninetythree</li><li>Ninetyfour</li><li>Ninetyfive</li><li>Ninetysix</li><li>Ninetyseven</li><li>Ninetyeight</li><li>Ninetynine</li>
+		</ul>
 
 		<script src="js/stroll.js"></script>
 		<script>
 			stroll.bind( 'ul' );
 
 			function layout() {
-				document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
+				// document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
 			};
 
 			window.addEventListener( 'resize', layout );
