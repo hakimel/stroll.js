@@ -26,8 +26,7 @@
 			}
 			ul li {
 				-webkit-transform: translate3d(0,0,0);
-				height: 30px;
-				display: block;
+				padding: 20px;
 			}
 			div {
 				/*-webkit-transform: translate3d(0,0,0);*/
@@ -53,15 +52,9 @@
 
 		<script src="js/stroll.js"></script>
 		<script>
+			document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
+
 			stroll.bind( 'ul' );
-
-			function layout() {
-				// document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
-			};
-
-			window.addEventListener( 'resize', layout );
-			
-			layout();
 		</script>
 		
 	</body>

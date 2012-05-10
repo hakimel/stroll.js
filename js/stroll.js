@@ -259,8 +259,12 @@
 		this.currentScrollTop = 0
 		this.lastScrollTop = 0
 
-		this.touchStartY = 0;
-		this.touchEndY = 0;
+		this.touch = {
+			offset: 0,
+			start: 0,
+			current: 0,
+			previous: 0
+		};
 
 		this.velocity = 0;
 	}
@@ -279,10 +283,20 @@
 		// One loop to get the offsets from the DOM
 		for( var i = 0, len = this.items.length; i < len; i++ ) {
 			var item = this.items[i];
-			item._offsetTop = item.offsetTop;
 			item._offsetHeight = item.offsetHeight;
-			item._className = item.className;
+			item._offsetTop = item.offsetTop;
+			item._offsetBottom = item._offsetTop + item._offsetHeight;
+			item._state = '';
+
+			item.style.opacity = 1;
 		}
+
+		// for( var i = 0, len = this.items.length; i < len; i++ ) {
+		// 	var item = this.items[i];
+		// 	item.style.position = 'absolute';
+		// 	item.style.width = '100%';
+		// 	item.style.top = ( i * item._offsetHeight ) + 'px';
+		// }
 
 		// Force an update
 		this.update( true );
@@ -311,73 +325,87 @@
 		
 		if( event.touches.length === 1 ) {
 			this.velocity = 0;
-			this.touchStartY = event.touches[0].clientY;
+			this.touch.offset = 0;
+			this.touch.start = event.touches[0].clientY;
 		}
 	}
 
 	TouchList.prototype.onTouchMove = function( event ) {
 		if( event.touches.length === 1 ) {
-			this.touchEndY = event.touches[0].clientY;
+			
+			this.touch.previous = this.touch.current;
+			this.touch.current = event.touches[0].clientY;
+			this.touch.offset = Math.round( this.touch.start - this.touch.current );
 		}
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
-		this.velocity = ( this.touchEndY - this.touchStartY ) / 10;
+		// var speed = Math.abs( this.touch.current - this.touch.previous ) / this.listHeight;
 
-		this.touchStartY = 0;
-		this.touchEndY = 0;
+		this.velocity = this.touch.previous - this.touch.current;
+
+		this.currentScrollTop += this.touch.offset;
+
+		this.touch.offset = 0;
+		this.touch.start = 0;
+		this.touch.current = 0;
 	};
 
 	/** 
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	TouchList.prototype.update = function( force ) {
-		var scrollTop = this.currentScrollTop - this.velocity;
 
-		if( this.velocity ) {
+		var scrollTop = this.currentScrollTop + this.velocity + this.touch.offset;
+
+		if( this.velocity || this.touch.offset ) {
+			// Scroll the DOM and add on the offset from touch
 			this.element.scrollTop = scrollTop;
-			this.currentScrollTop = scrollTop;
+			scrollTop = this.element.scrollTop;
+
+			// Cache the currently set scroll top and touch offset
+			this.currentScrollTop = scrollTop - this.touch.offset;
 		}
 
+		// Decay
 		this.velocity *= 0.97;
 
 		if( Math.abs( this.velocity ) < 0.15 ) {
 			this.velocity = 0;
 		}
 
-		// Quit if nothing changed
+		// Only proceed if the scroll position has changed
 		if( scrollTop !== this.lastScrollTop || force ) {
 			this.lastScrollTop = scrollTop;
-			this.currentScrollTop = scrollTop;
+			this.currentScrollTop = scrollTop - this.touch.offset;
 
 			var scrollBottom = scrollTop + this.listHeight;
 			
 			// One loop to make our changes to the DOM
 			for( var i = 0, len = this.items.length; i < len; i++ ) {
 				var item = this.items[i];
-				var itemClass = item._className;
 
 				// Above list viewport
-				if( item._offsetTop + item._offsetHeight < scrollTop ) {
+				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity >= 0 && itemClass.indexOf( 'past' ) === -1 ) {
+					if( this.velocity >= 0 && item._state !== 'past' ) {
 						item.classList.add( 'past' );
-						item._className = item.className;
+						item._state = 'past';
 					}
 				}
 				// Below list viewport
-				else if( this.velocity <= 0 && item._offsetTop > scrollBottom ) {
+				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( itemClass.indexOf( 'future' ) === -1 ) {
+					if( this.velocity <= 0 && item._state !== 'future' ) {
 						item.classList.add( 'future' );
-						item._className = item.className;
+						item._state = 'future';
 					}
 				}
 				// Inside of list viewport
-				else if( itemClass.length ) {
-					if( itemClass.indexOf( 'past' ) !== -1 ) item.classList.remove( 'past' );
-					if( itemClass.indexOf( 'future' ) !== -1 ) item.classList.remove( 'future' );
-					item._className = item.className;
+				else if( item._state ) {
+					if( item._state === 'past' ) item.classList.remove( 'past' );
+					if( item._state === 'future' ) item.classList.remove( 'future' );
+					item._state = '';
 				}
 			}
 		}
