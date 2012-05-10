@@ -244,29 +244,24 @@
 		this.element = element;
 		this.element.style.overflow = 'hidden';
 
-		this.wrapper = document.createElement( 'div' );
-		this.wrapper.style.position = 'relative';
-		this.wrapper.style.width = '100%';
-		// this.wrapper.style.height = '100%';
-		// this.wrapper.style.overflow = 'visible';
+		// this.wrapper = document.createElement( 'div' );
+		// this.wrapper.style.position = 'relative';
+		// this.wrapper.style.width = '100%';
 		
-		var items = Array.prototype.slice.apply( this.element.children );
+		// var items = Array.prototype.slice.apply( this.element.children );
 
-		for( var i = 0, len = items.length; i < len; i++ ) {
-			this.wrapper.appendChild( items[i] );
-		}
+		// for( var i = 0, len = items.length; i < len; i++ ) {
+		// 	this.wrapper.appendChild( items[i] );
+		// }
 
-		this.element.appendChild( this.wrapper );
+		// this.element.appendChild( this.wrapper );
 
-		// Insert the wrapper before the element
-		// this.element.parentNode.insertBefore( this.wrapper, this.element );
+		this.currentScrollTop = 0
+		this.lastScrollTop = 0
 
-		// Inject the element into the wrapper
-		// this.wrapper.appendChild( this.element );
+		this.touchStartY = 0;
+		this.touchEndY = 0;
 
-		this.lastTop = 0
-		this.startY = 0;
-		this.endY = 0;
 		this.velocity = 0;
 	}
 	TouchList.prototype = new List();
@@ -276,7 +271,7 @@
 	 * this list is in sync with its contents. 
 	 */
 	List.prototype.sync = function() {
-		this.items = Array.prototype.slice.apply( this.wrapper.children );
+		this.items = Array.prototype.slice.apply( this.element.children );
 
 		// Caching some heights so we don't need to go back to the DOM so much
 		this.listHeight = this.element.offsetHeight;
@@ -286,6 +281,7 @@
 			var item = this.items[i];
 			item._offsetTop = item.offsetTop;
 			item._offsetHeight = item.offsetHeight;
+			item._className = item.className;
 		}
 
 		// Force an update
@@ -315,73 +311,73 @@
 		
 		if( event.touches.length === 1 ) {
 			this.velocity = 0;
-			this.startY = event.touches[0].clientY;
+			this.touchStartY = event.touches[0].clientY;
 		}
 	}
 
 	TouchList.prototype.onTouchMove = function( event ) {
 		if( event.touches.length === 1 ) {
-			this.endY = event.touches[0].clientY;
+			this.touchEndY = event.touches[0].clientY;
 		}
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
-		this.velocity = ( this.endY - this.startY ) / 10;
+		this.velocity = ( this.touchEndY - this.touchStartY ) / 10;
 
-		this.startY = 0;
-		this.endY = 0;
+		this.touchStartY = 0;
+		this.touchEndY = 0;
 	};
 
 	/** 
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	TouchList.prototype.update = function( force ) {
-		var scrollTop = ( parseFloat( this.wrapper.style.top ) || 0 ) + this.velocity;
+		var scrollTop = this.currentScrollTop - this.velocity;
 
 		if( this.velocity ) {
-			this.wrapper.style.top = scrollTop + 'px';
+			this.element.scrollTop = scrollTop;
+			this.currentScrollTop = scrollTop;
 		}
-		
-		// var scrollTop = this.lastTop - this.velocity;
-
-		// if( this.velocity ) {
-		// 	this.element.scrollTop = scrollTop;
-		// }
-
-		scrollTop = -scrollTop;
-
-		var scrollBottom = scrollTop + this.listHeight;
 
 		this.velocity *= 0.97;
-		if( Math.abs(this.velocity) < 0.1 ) this.velocity = 0;
+
+		if( Math.abs( this.velocity ) < 0.15 ) {
+			this.velocity = 0;
+		}
 
 		// Quit if nothing changed
-		if( scrollTop !== this.lastTop || force ) {
-			this.lastTop = scrollTop;
+		if( scrollTop !== this.lastScrollTop || force ) {
+			this.lastScrollTop = scrollTop;
+			this.currentScrollTop = scrollTop;
+
+			var scrollBottom = scrollTop + this.listHeight;
 			
 			// One loop to make our changes to the DOM
 			for( var i = 0, len = this.items.length; i < len; i++ ) {
 				var item = this.items[i];
-				var itemClass = item.className;
+				var itemClass = item._className;
 
 				// Above list viewport
 				if( item._offsetTop + item._offsetHeight < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( itemClass.indexOf( 'past' ) === -1 ) {
+					if( this.velocity >= 0 && itemClass.indexOf( 'past' ) === -1 ) {
 						item.classList.add( 'past' );
+						item._className = item.className;
 					}
 				}
 				// Below list viewport
-				else if( item._offsetTop > scrollBottom ) {
+				else if( this.velocity <= 0 && item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
 					if( itemClass.indexOf( 'future' ) === -1 ) {
 						item.classList.add( 'future' );
+						item._className = item.className;
 					}
 				}
 				// Inside of list viewport
 				else if( itemClass.length ) {
 					if( itemClass.indexOf( 'past' ) !== -1 ) item.classList.remove( 'past' );
 					if( itemClass.indexOf( 'future' ) !== -1 ) item.classList.remove( 'future' );
+					item._className = item.className;
 				}
 			}
 		}
