@@ -55,7 +55,6 @@
 		else if( contains( element ) ) {
 			remove( element );
 		}
-		var velocity = 0;
 
 		var list = IS_TOUCH_DEVICE ? new TouchList( element ) : new List( element );
 
@@ -156,7 +155,8 @@
 	}
 
 	/**
-	 * 
+	 * The basic type of list; applies past & future classes to 
+	 * list items based on scroll state.
 	 */
 	function List( element ) {
 		this.element = element;
@@ -238,35 +238,30 @@
 
 
 	/**
-	 * 
+	 * A list specifically for touch devices. Simulates the style 
+	 * of scrolling you'd see on a touch device but does not rely 
+	 * on webkit-overflow-scrolling.
 	 */
 	function TouchList( element ) {
 		this.element = element;
 		this.element.style.overflow = 'hidden';
 
-		// this.wrapper = document.createElement( 'div' );
-		// this.wrapper.style.position = 'relative';
-		// this.wrapper.style.width = '100%';
-		
-		// var items = Array.prototype.slice.apply( this.element.children );
-
-		// for( var i = 0, len = items.length; i < len; i++ ) {
-		// 	this.wrapper.appendChild( items[i] );
-		// }
-
-		// this.element.appendChild( this.wrapper );
-
-		this.currentScrollTop = 0
-		this.lastScrollTop = 0
+		this.top = {
+			value: 0,
+			natural: 0
+		};
 
 		this.touch = {
+			value: 0,
 			offset: 0,
 			start: 0,
-			current: 0,
 			previous: 0
 		};
 
-		this.velocity = 0;
+		this.velocity = {
+			value: 0,
+			target: 0
+		};
 	}
 	TouchList.prototype = new List();
 
@@ -290,13 +285,6 @@
 
 			item.style.opacity = 1;
 		}
-
-		// for( var i = 0, len = this.items.length; i < len; i++ ) {
-		// 	var item = this.items[i];
-		// 	item.style.position = 'absolute';
-		// 	item.style.width = '100%';
-		// 	item.style.top = ( i * item._offsetHeight ) + 'px';
-		// }
 
 		// Force an update
 		this.update( true );
@@ -324,7 +312,7 @@
 		event.preventDefault();
 		
 		if( event.touches.length === 1 ) {
-			this.velocity = 0;
+			this.velocity.value = 0;
 			this.touch.offset = 0;
 			this.touch.start = event.touches[0].clientY;
 		}
@@ -332,24 +320,25 @@
 
 	TouchList.prototype.onTouchMove = function( event ) {
 		if( event.touches.length === 1 ) {
-			
-			this.touch.previous = this.touch.current;
-			this.touch.current = event.touches[0].clientY;
-			this.touch.offset = Math.round( this.touch.start - this.touch.current );
+			this.touch.previous = this.touch.value;
+			this.touch.value = event.touches[0].clientY;
+			this.touch.offset = Math.round( this.touch.start - this.touch.value );
+
+			this.velocity.target = ( this.touch.start - this.touch.value ) / 10;
 		}
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
-		// var speed = Math.abs( this.touch.current - this.touch.previous ) / this.listHeight;
-		// this.velocity = this.touch.previous - this.touch.current;
-		
-		this.velocity = ( this.touch.start - this.touch.current ) / 10;
+		// var speed = Math.abs( this.touch.value - this.touch.previous ) / this.listHeight;
+		// this.velocity.value = this.touch.previous - this.touch.value;
 
-		this.currentScrollTop += this.touch.offset;
+		this.velocity.value = this.velocity.target;
+
+		this.top.value += this.touch.offset;
 
 		this.touch.offset = 0;
 		this.touch.start = 0;
-		this.touch.current = 0;
+		this.touch.value = 0;
 	};
 
 	/** 
@@ -357,28 +346,29 @@
 	 */
 	TouchList.prototype.update = function( force ) {
 
-		var scrollTop = this.currentScrollTop + this.velocity + this.touch.offset;
+		var scrollTop = this.top.value + this.velocity.value + this.touch.offset;
 
-		if( this.velocity || this.touch.offset ) {
+		if( this.velocity.value || this.touch.offset ) {
 			// Scroll the DOM and add on the offset from touch
 			this.element.scrollTop = scrollTop;
 			scrollTop = this.element.scrollTop;
 
 			// Cache the currently set scroll top and touch offset
-			this.currentScrollTop = scrollTop - this.touch.offset;
+			this.top.value = scrollTop - this.touch.offset;
 		}
 
 		// Decay
-		this.velocity *= 0.97;
+		this.velocity.value *= 0.97;
+		this.velocity.target *= 0.9;
 
-		if( Math.abs( this.velocity ) < 0.15 ) {
-			this.velocity = 0;
+		if( Math.abs( this.velocity.value ) < 0.15 ) {
+			this.velocity.value = 0;
 		}
 
 		// Only proceed if the scroll position has changed
-		if( scrollTop !== this.lastScrollTop || force ) {
-			this.lastScrollTop = scrollTop;
-			this.currentScrollTop = scrollTop - this.touch.offset;
+		if( scrollTop !== this.top.natural || force ) {
+			this.top.natural = scrollTop;
+			this.top.value = scrollTop - this.touch.offset;
 
 			var scrollBottom = scrollTop + this.listHeight;
 			
@@ -389,7 +379,7 @@
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity >= 0 && item._state !== 'past' ) {
+					if( this.velocity.value >= 0 && item._state !== 'past' ) {
 						item.classList.add( 'past' );
 						item._state = 'past';
 					}
@@ -397,7 +387,7 @@
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity <= 0 && item._state !== 'future' ) {
+					if( this.velocity.value <= 0 && item._state !== 'future' ) {
 						item.classList.add( 'future' );
 						item._state = 'future';
 					}
