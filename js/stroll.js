@@ -341,8 +341,9 @@
 
 	TouchList.prototype.onTouchEnd = function( event ) {
 		// var speed = Math.abs( this.touch.current - this.touch.previous ) / this.listHeight;
-
-		this.velocity = this.touch.previous - this.touch.current;
+		// this.velocity = this.touch.previous - this.touch.current;
+		
+		this.velocity = ( this.touch.start - this.touch.current ) / 10;
 
 		this.currentScrollTop += this.touch.offset;
 
