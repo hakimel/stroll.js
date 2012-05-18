@@ -373,6 +373,7 @@
 
 		// Only proceed if the scroll position has changed
 		if( scrollTop !== this.top.natural || force ) {
+			console.log(1);
 			this.top.natural = scrollTop;
 			this.top.value = scrollTop - this.touch.offset;
 
