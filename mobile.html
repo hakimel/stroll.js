@@ -27,10 +27,76 @@
 				-webkit-transform: translate3d(0,0,0);
 				padding: 20px;
 			}
+
+			#settings {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: -100%;
+				left: 0;
+				z-index: 2;
+
+				opacity: 0;
+				background: rgba( 0, 0, 0, 0.85 );
+
+				-webkit-transition: all 0.3s ease;
+				   -moz-transition: all 0.3s ease;
+				    -ms-transition: all 0.3s ease;
+				     -o-transition: all 0.3s ease;
+				        transition: all 0.3s ease;
+			}
+				#settings.opened {
+					top: 0;
+					opacity: 1;
+				}
+				#settings li {
+					color: #fff;
+					background: rgba( 0, 0, 0, 0.5 );
+				}
+				#settings li:nth-child(odd) {
+					background: rgba( 0, 0, 0, 0.5 );
+					border-top: 1px solid #333;
+					border-bottom: 1px solid #333;
+				}
+
+			#settings-toggle {
+				position: absolute;
+				width: 32px;
+				height: 32px;
+				top: 10px;
+				right: 10px;
+				z-index: 3;
+
+				-webkit-touch-callout: none;
+				  -webkit-user-select: none;
+
+				background: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWVJREFUeNpiYCAPJADxfzScwEBHcB+LA87Ty3IHLJbDsAG1LAEF53ogDsAiNx+PA+bjMSuB3PgFBXcDECsQ8D1yKIDU9gPxe1LTSQIRFlCKURzBhOYAfzqkIRQ7mNEkOXHEOzVBJRDfwKfgPQ2D/z66ZcxYHCABxBY08v1EID6ALMCIRZECNpeigQNQwz4g6YmH5hJ8QBGIHxByZQCeIHxPICsRykUOhEq4+QQMCCCjHMFWWDmgazhPRALaT0Jc7ycyQYJDk9gUHEBiUU6UuUwkGHqBBLUPiFXIxDDAgBQHkFLVKpBa9d4fgER4Hj1L0zMbGpDb4qG0IMKwmJKieCFSaqdqUdxAw9qwn9wWL7Xwe0oqIpo0ydDbA+1ArEGH8mclroJoIx0s30hqPn4PTTzENssdoGobsKQnkvoGuDoTpHZMAkjtmFDSNXNgoBM4T0yLlxjATKYDfmKpFwpJbDOAAUCAAQA1C13UHZxFWAAAAABJRU5ErkJggg==) no-repeat;
+			}
+				#settings-toggle.opened {
+					background: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAS5JREFUeNrUV4sRwiAMDZ2AETpCnUC7QUfoKG7CCm6gToAjuIFugImHPbxrS6Ag+O7etT3SvPALQQATxpgOHwNyjzwsmF2QV+RJCHGDFEDhEalNOOifcYtwizyb7SAfbaj4gHyYdCBfQ8iQ58LI6XlufI2EcOccHxopIS+eyB3ukjt9NE6D+oE4WA0VM++KuR21teWvB4ZjZe2kx5bapLX1BaGnDMcRd4JdCmISd2x9QXSNTa9r6FzHuHhoEfVIN9XSe2/bpkDpX4/vAZjZbq53n5FYa/NmSQjM7XNCseJvQMQBI1cSmQw9uCDylJMpxAkNlMY/TUG2RVh8Gx43iIfYzOFYPBWXP4yqOI5tECkqYHalXE1JVrworassr+JiUsXVLOHl1NtrUfp6/hJgANSnkcpCjbkhAAAAAElFTkSuQmCC) no-repeat;
+				}
 		</style>
 	</head>
 	
 	<body>
+
+		<div id="settings-toggle"></div>
+		<aside id="settings">
+			<ul class="flip">
+				<li class="curl">Curl</li>
+				<li class="helix">Helix</li>
+				<li class="flip">Flip</li>
+				<li class="fly">Fly</li>
+				<li class="fly-reverse">Fly-Reverse</li>
+				<li class="skew">Skew</li>
+				<li class="wave">Wave</li>
+				<li class="fan">Fan</li>
+				<li class="tilt">Tilt</li>
+				<li class="papercut">Papercut</li>
+				<li class="zipper">Zipper</li>
+				<li class="twirl">Twirl</li>
+			</ul>
+		</aside>
 
 		<!-- <header>
 			stroll.js - CSS3 scroll effects. <small>Created by <a href="http://twitter.com/hakimel">@hakimel</a>. Tested in WebKit/FF Nightly. In the mood for more CSS? <a href="http://hakim.se/experiments">Here you go</a>.</small>
@@ -47,10 +113,41 @@
 		</ul>
 
 		<script src="js/stroll.js"></script>
-		<script>
-			document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
 
-			stroll.bind( 'ul' );
+		<!-- The JS below is used to control the demo page -->
+		<script>
+			(function(){
+				
+				// Keep the list height in sync with the window height
+				window.addEventListener( 'orientationchange', updateHeight, false );
+
+				var settingsToggle = document.querySelector( '#settings-toggle' );
+				var settingsPanel = document.querySelector( '#settings' );
+
+				// Toggle the appearance of the settings panel when the
+				// button is tapped
+				settingsToggle.addEventListener( 'touchstart', function() {
+					if( /open/gi.test( settingsPanel.className ) ) {
+						settingsPanel.className = '';
+						settingsToggle.className = '';
+					}
+					else {
+						settingsPanel.className = 'opened';
+						settingsToggle.className = 'opened';
+					}
+				}, false );
+
+				// Run an initial height update
+				updateHeight();
+
+				// Updates the list height and re-binds the list
+				function updateHeight() {
+					document.querySelector( 'ul' ).style.height = window.innerHeight + 'px';
+
+					stroll.bind( 'ul' );
+				}
+
+			})()
 		</script>
 		
 	</body>

@@ -323,6 +323,7 @@
 			this.touch.previous = this.touch.value;
 			this.touch.value = event.touches[0].clientY;
 			this.touch.offset = Math.round( this.touch.start - this.touch.value );
+			this.touch.lastMove = Date.now();
 
 			this.velocity.target = ( this.touch.start - this.touch.value ) / 10;
 		}
@@ -332,7 +333,7 @@
 		// var speed = Math.abs( this.touch.value - this.touch.previous ) / this.listHeight;
 		// this.velocity.value = this.touch.previous - this.touch.value;
 
-		this.velocity.value = this.velocity.target;
+		this.velocity.value = this.velocity.target; //* ( 1 - ( Math.min( Date.now() - this.touch.lastMove, 400 ) / 1000 ) );
 
 		this.top.value += this.touch.offset;
 
