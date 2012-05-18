@@ -340,6 +340,11 @@
 		this.touch.offset = 0;
 		this.touch.start = 0;
 		this.touch.value = 0;
+		
+		if( Math.abs( this.velocity.value ) > 4 ) {
+			event.stopImmediatePropagation();
+			return false;
+		}
 	};
 
 	/** 
