@@ -333,7 +333,13 @@
 		// var speed = Math.abs( this.touch.value - this.touch.previous ) / this.listHeight;
 		// this.velocity.value = this.touch.previous - this.touch.value;
 
-		this.velocity.value = this.velocity.target; //* ( 1 - ( Math.min( Date.now() - this.touch.lastMove, 400 ) / 1000 ) );
+		// Don't apply any velocity if the touch ended in a still state
+		if( Date.now() - this.touch.lastMove > 200 || Math.abs( this.touch.previous - this.touch.value ) < 5 ) {
+			this.velocity.target = 0;
+			this.velocity.value = 0;
+		}
+		
+		this.velocity.value = this.velocity.target;
 
 		this.top.value += this.touch.offset;
 
@@ -373,7 +379,6 @@
 
 		// Only proceed if the scroll position has changed
 		if( scrollTop !== this.top.natural || force ) {
-			console.log(1);
 			this.top.natural = scrollTop;
 			this.top.value = scrollTop - this.touch.offset;
 
