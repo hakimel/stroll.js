@@ -331,6 +331,8 @@
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
+		var distanceMoved = this.touch.offset;
+
 		// Don't apply any velocity if the touch ended in a still state
 		if( Date.now() - this.touch.lastMove > 200 || Math.abs( this.touch.previous - this.touch.value ) < 5 ) {
 			this.velocity.target = 0;
@@ -345,9 +347,9 @@
 		this.touch.offset = 0;
 		this.touch.start = 0;
 		this.touch.value = 0;
-		
+
 		// If a swipe was captured, prevent event propagation
-		if( Math.abs( this.velocity.value ) > 4 ) {
+		if( Math.abs( this.velocity.value ) > 4 || Math.abs( distanceMoved ) > 10 ) {
 			event.stopImmediatePropagation();
 			return false;
 		}
