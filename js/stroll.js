@@ -269,7 +269,7 @@
 	 * Fetches the latest properties from the DOM to ensure that 
 	 * this list is in sync with its contents. 
 	 */
-	List.prototype.sync = function() {
+	TouchList.prototype.sync = function() {
 		this.items = Array.prototype.slice.apply( this.element.children );
 
 		// Caching some heights so we don't need to go back to the DOM so much
