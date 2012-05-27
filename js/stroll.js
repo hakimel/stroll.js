@@ -272,10 +272,10 @@
 	TouchList.prototype.sync = function() {
 		this.items = Array.prototype.slice.apply( this.element.children );
 
-		// Caching some heights so we don't need to go back to the DOM so much
+		// Cache the list height so we don't need to go back to the DOM so much
 		this.listHeight = this.element.offsetHeight;
 
-		// One loop to get the offsets from the DOM
+		// One loop to get the properties we need from the DOM
 		for( var i = 0, len = this.items.length; i < len; i++ ) {
 			var item = this.items[i];
 			item._offsetHeight = item.offsetHeight;
@@ -283,6 +283,7 @@
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
 			item._state = '';
 
+			// Opacity is a MAJOR performance hit on mobile so we can't allow it
 			item.style.opacity = 1;
 		}
 
@@ -330,9 +331,6 @@
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
-		// var speed = Math.abs( this.touch.value - this.touch.previous ) / this.listHeight;
-		// this.velocity.value = this.touch.previous - this.touch.value;
-
 		// Don't apply any velocity if the touch ended in a still state
 		if( Date.now() - this.touch.lastMove > 200 || Math.abs( this.touch.previous - this.touch.value ) < 5 ) {
 			this.velocity.target = 0;
@@ -343,10 +341,12 @@
 
 		this.top.value += this.touch.offset;
 
+		// Reset the variables used to determne swipe speed
 		this.touch.offset = 0;
 		this.touch.start = 0;
 		this.touch.value = 0;
 		
+		// If a swipe was captured, prevent event propagation
 		if( Math.abs( this.velocity.value ) > 4 ) {
 			event.stopImmediatePropagation();
 			return false;
@@ -358,8 +358,10 @@
 	 */
 	TouchList.prototype.update = function( force ) {
 
+		// Determine the desired scroll top position
 		var scrollTop = this.top.value + this.velocity.value + this.touch.offset;
 
+		// Only scroll the list if there's input
 		if( this.velocity.value || this.touch.offset ) {
 			// Scroll the DOM and add on the offset from touch
 			this.element.scrollTop = scrollTop;
@@ -369,7 +371,7 @@
 			this.top.value = scrollTop - this.touch.offset;
 		}
 
-		// Decay
+		// Decay velocity
 		this.velocity.value *= 0.97;
 		this.velocity.target *= 0.9;
 
