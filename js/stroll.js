@@ -255,7 +255,8 @@
 			value: 0,
 			offset: 0,
 			start: 0,
-			previous: 0
+			previous: 0,
+			lastMove: Date.now()
 		};
 
 		this.velocity = {
@@ -274,6 +275,9 @@
 
 		// Cache the list height so we don't need to go back to the DOM so much
 		this.listHeight = this.element.offsetHeight;
+
+		this.top.natural = this.element.scrollTop;
+		this.top.value = this.top.natural;
 
 		// One loop to get the properties we need from the DOM
 		for( var i = 0, len = this.items.length; i < len; i++ ) {
@@ -295,18 +299,22 @@
 
 	TouchList.prototype.bind = function() {
 		var scope = this;
-		
-		this.element.addEventListener( 'touchstart', function( event ) {
+
+		this.touchStartDelegate = function( event ) {
 			scope.onTouchStart( event );
-		}, false );
+		};
 
-		this.element.addEventListener( 'touchmove', function( event ) {
+		this.touchMoveDelegate = function( event ) {
 			scope.onTouchMove( event );
-		}, false );
+		};
 
-		this.element.addEventListener( 'touchend', function( event ) {
+		this.touchEndDelegate = function( event ) {
 			scope.onTouchEnd( event );
-		}, false );
+		};
+
+		this.element.addEventListener( 'touchstart', this.touchStartDelegate, false );
+		this.element.addEventListener( 'touchmove', this.touchMoveDelegate, false );
+		this.element.addEventListener( 'touchend', this.touchEndDelegate, false );
 	}
 
 	TouchList.prototype.onTouchStart = function( event ) {
@@ -417,6 +425,17 @@
 			}
 		}
 	};
+
+	/**
+	 * Cleans up after this list and disposes of it.
+	 */
+	TouchList.prototype.destroy = function() {
+		List.prototype.destroy.apply( this );
+
+		this.element.removeEventListener( 'touchstart', this.touchStartDelegate, false );
+		this.element.removeEventListener( 'touchmove', this.touchMoveDelegate, false );
+		this.element.removeEventListener( 'touchend', this.touchEndDelegate, false );
+	}
 
 
 	/**
