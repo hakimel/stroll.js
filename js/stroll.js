@@ -287,7 +287,7 @@
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
 			item._state = '';
 
-			// Opacity is a MAJOR performance hit on mobile so we can't allow it
+			// Animating ppacity is a MAJOR performance hit on mobile so we can't allow it
 			item.style.opacity = 1;
 		}
 
@@ -367,7 +367,6 @@
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	TouchList.prototype.update = function( force ) {
-
 		// Determine the desired scroll top position
 		var scrollTop = this.top.value + this.velocity.value + this.touch.offset;
 
@@ -382,7 +381,7 @@
 		}
 
 		// Decay velocity
-		this.velocity.value *= 0.97;
+		this.velocity.value *= 0.95;
 		this.velocity.target *= 0.9;
 
 		if( Math.abs( this.velocity.value ) < 0.15 ) {
@@ -403,7 +402,7 @@
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity.value >= 0 && item._state !== 'past' ) {
+					if( this.velocity.value <= 0 && item._state !== 'past' ) {
 						item.classList.add( 'past' );
 						item._state = 'past';
 					}
@@ -411,7 +410,7 @@
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity.value <= 0 && item._state !== 'future' ) {
+					if( this.velocity.value >= 0 && item._state !== 'future' ) {
 						item.classList.add( 'future' );
 						item._state = 'future';
 					}
