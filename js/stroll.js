@@ -256,13 +256,13 @@
 			offset: 0,
 			start: 0,
 			previous: 0,
-			lastMove: Date.now()
+			lastMove: Date.now(),
+			accellerateTimeout: -1,
+			isAccellerating: false,
+			isActive: false
 		};
 
-		this.velocity = {
-			value: 0,
-			target: 0
-		};
+		this.velocity = 0;
 	}
 	TouchList.prototype = new List();
 
@@ -321,33 +321,67 @@
 		event.preventDefault();
 		
 		if( event.touches.length === 1 ) {
-			this.velocity.value = 0;
-			this.touch.offset = 0;
+			this.touch.isActive = true;
 			this.touch.start = event.touches[0].clientY;
+			this.touch.previous = this.touch.start;
+			this.touch.value = this.touch.start;
+			this.touch.offset = 0;
+
+			if( this.velocity ) {
+				this.touch.isAccellerating = true;
+
+				var scope = this;
+
+				this.touch.accellerateTimeout = setTimeout( function() {
+					scope.touch.isAccellerating = false;
+					scope.velocity = 0;
+				}, 500 );
+			}
+			else {
+				this.velocity = 0;
+			}
 		}
 	}
 
 	TouchList.prototype.onTouchMove = function( event ) {
 		if( event.touches.length === 1 ) {
-			this.touch.previous = this.touch.value;
+			var previous = this.touch.value;
+
 			this.touch.value = event.touches[0].clientY;
-			this.touch.offset = Math.round( this.touch.start - this.touch.value );
 			this.touch.lastMove = Date.now();
 
-			this.velocity.target = ( this.touch.start - this.touch.value ) / 10;
+			var sameDirection = ( this.touch.value > this.touch.previous && this.velocity < 0 )
+								|| ( this.touch.value < this.touch.previous && this.velocity > 0 );
+			
+			if( this.touch.isAccellerating && sameDirection ) {
+				clearInterval( this.touch.accellerateTimeout );
+
+				// Increase velocity exponentially
+				this.velocity += ( this.touch.previous - this.touch.value ) / 10;
+			}
+			else {
+				this.touch.isAccellerating = false;
+
+				this.velocity = 0;
+
+				this.touch.offset = Math.round( this.touch.start - this.touch.value );
+			}
+
+			this.touch.previous = previous;
 		}
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
+		if( !this.touch.isAccellerating ) {
+			this.velocity = ( this.touch.start - this.touch.value ) / 10;
+		}
+
 		var distanceMoved = this.touch.offset;
 
 		// Don't apply any velocity if the touch ended in a still state
 		if( Date.now() - this.touch.lastMove > 200 || Math.abs( this.touch.previous - this.touch.value ) < 5 ) {
-			this.velocity.target = 0;
-			this.velocity.value = 0;
+			this.velocity = 0;
 		}
-		
-		this.velocity.value = this.velocity.target;
 
 		this.top.value += this.touch.offset;
 
@@ -355,9 +389,13 @@
 		this.touch.offset = 0;
 		this.touch.start = 0;
 		this.touch.value = 0;
+		this.touch.isActive = false;
+		this.touch.isAccellerating = false;
+
+		clearInterval( this.touch.accellerateTimeout );
 
 		// If a swipe was captured, prevent event propagation
-		if( Math.abs( this.velocity.value ) > 4 || Math.abs( distanceMoved ) > 10 ) {
+		if( Math.abs( this.velocity ) > 4 || Math.abs( distanceMoved ) > 10 ) {
 			event.stopImmediatePropagation();
 			return false;
 		}
@@ -368,10 +406,10 @@
 	 */
 	TouchList.prototype.update = function( force ) {
 		// Determine the desired scroll top position
-		var scrollTop = this.top.value + this.velocity.value + this.touch.offset;
+		var scrollTop = this.top.value + this.velocity + this.touch.offset;
 
 		// Only scroll the list if there's input
-		if( this.velocity.value || this.touch.offset ) {
+		if( this.velocity || this.touch.offset ) {
 			// Scroll the DOM and add on the offset from touch
 			this.element.scrollTop = scrollTop;
 			scrollTop = this.element.scrollTop;
@@ -380,12 +418,15 @@
 			this.top.value = scrollTop - this.touch.offset;
 		}
 
-		// Decay velocity
-		this.velocity.value *= 0.95;
-		this.velocity.target *= 0.9;
+		// If there is no active touch, decay velocity
+		if( !this.touch.isActive || this.touch.isAccellerating ) {
+			this.velocity *= 0.95;
+		}
 
-		if( Math.abs( this.velocity.value ) < 0.15 ) {
-			this.velocity.value = 0;
+		// Cut off early, the last fraction of velocity doesn't have 
+		// much impact on movement
+		if( Math.abs( this.velocity ) < 0.15 ) {
+			this.velocity = 0;
 		}
 
 		// Only proceed if the scroll position has changed
@@ -402,7 +443,7 @@
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity.value <= 0 && item._state !== 'past' ) {
+					if( this.velocity <= 0 && item._state !== 'past' ) {
 						item.classList.add( 'past' );
 						item._state = 'past';
 					}
@@ -410,7 +451,7 @@
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity.value >= 0 && item._state !== 'future' ) {
+					if( this.velocity >= 0 && item._state !== 'future' ) {
 						item.classList.add( 'future' );
 						item._state = 'future';
 					}
