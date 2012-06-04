@@ -406,6 +406,12 @@
 		    -ms-transform-origin: 0% 0%;
 		     -o-transform-origin: 0% 0%;
 		        transform-origin: 0% 0%;
+
+		-webkit-backface-visibility: hidden;
+		   -moz-backface-visibility: hidden;
+		    -ms-backface-visibility: hidden;
+		     -o-backface-visibility: hidden;
+		        backface-visibility: hidden;
 	}
 		.curl li.past {
 			opacity: 0;

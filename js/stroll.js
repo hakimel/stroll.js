@@ -360,10 +360,9 @@
 				this.velocity += ( this.touch.previous - this.touch.value ) / 10;
 			}
 			else {
-				this.touch.isAccellerating = false;
-
 				this.velocity = 0;
 
+				this.touch.isAccellerating = false;
 				this.touch.offset = Math.round( this.touch.start - this.touch.value );
 			}
 

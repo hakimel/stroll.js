@@ -24,12 +24,14 @@
 			ul {
 				position: relative;
 				width: 100%; 
-				/*-webkit-overflow-scrolling: touch; */
 			}
 			ul li {
-				-webkit-transform: translate3d(0,0,1px);
-				-webkit-backface-visibility: hidden;
+				-webkit-transform: translate3d( 0, 0, 1px );
 				padding: 20px;
+			}
+
+			ul li.cache {
+				-webkit-transform: rotateY( 1deg );
 			}
 
 			#settings {
@@ -96,9 +98,9 @@
 				<li class="curl">Curl</li>
 				<li class="helix">Helix</li>
 				<li class="flip">Flip</li>
-				<li class="fly">Fly</li>
-				<li class="fly-reverse">Fly-Reverse</li>
-				<li class="skew">Skew</li>
+				<!-- Disabled, transform origin z is causing funky results in Mobile Safari -->
+				<!-- <li class="fly">Fly</li> -->
+				<!-- <li class="fly-reverse">Fly-Reverse</li> -->
 				<li class="wave">Wave</li>
 				<li class="fan">Fan</li>
 				<li class="tilt">Tilt</li>
@@ -118,10 +120,16 @@
 		<script>
 			(function(){
 
-				var entries = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty', 'Twentyone', 'Twentytwo', 'Twentythree', 'Twentyfour', 'Twentyfive', 'Twentysize', 'Twentyseven', 'Twentyeight', 'Twentynine', 'Thirty', 'Thirtyone', 'Thirtytwo', 'Thirtythree', 'Thirtyfour', 'Thirtyfive', 'Thirtysize', 'Thirtyseven', 'Thirtyeight', 'Thirtynine', 'Forty', 'Fortyone', 'Fortytwo', 'Fortythree', 'Fortyfour', 'Fortyfive', 'Fortysix', 'Fortyseven', 'Fortyeight', 'Fortynine', 'Fifty', 'Fiftyone', 'Fiftytwo', 'Fiftythree', 'Fiftyfour', 'Fiftyfive', 'Fiftysix', 'Fiftyseven', 'Fiftyeight', 'Fiftynine', 'Sixty' ];
+				var entries = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty', 'Twentyone', 'Twentytwo', 'Twentythree', 'Twentyfour', 'Twentyfive', 'Twentysize', 'Twentyseven', 'Twentyeight', 'Twentynine', 'Thirty', 'Thirtyone', 'Thirtytwo', 'Thirtythree', 'Thirtyfour', 'Thirtyfive', 'Thirtysize', 'Thirtyseven', 'Thirtyeight', 'Thirtynine', 'Forty', 'Fortyone', 'Fortytwo', 'Fortythree', 'Fortyfour', 'Fortyfive', 'Fortysix', 'Fortyseven', 'Fortyeight', 'Fortynine', 'Fifty', 'Fiftyone', 'Fiftytwo', 'Fiftythree', 'Fiftyfour', 'Fiftyfive', 'Fiftysix', 'Fiftyseven', 'Fiftyeight', 'Fiftynine', 'Sixty', 'Sixtyone', 'Sixtytwo', 'Sixtythree', 'Sixtyfour', 'Sixtyfive', 'Sixtysix', 'Sixtyseven', 'Sixtyeight', 'Sixtynine', 'Seventy', 'Seventyone', 'Seventytwo', 'Seventythree', 'Seventyfour', 'Seventyfive', 'Seventysix', 'Seventyseven', 'Seventyeight', 'Seventynine', 'Eighty', 'Eightyone', 'Eightytwo', 'Eightythree', 'Eightyfour', 'Eightyfive', 'Eightysix', 'Eightyseven', 'Eightyeight', 'Eightynine', 'Ninety', 'Ninetyone', 'Ninetytwo', 'Ninetythree', 'Ninetyfour', 'Ninetyfive', 'Ninetysix', 'Ninetyseven', 'Ninetyeight', 'Ninetynine'];
+
+
 
 				// Keep the list height in sync with the window height
 				window.addEventListener( 'orientationchange', updateHeight, false );
+				window.addEventListener( 'resize', updateHeight, false );
+
+				var IS_ANDROID = navigator.userAgent.match( /android/gi ),
+					IS_IPHONE = navigator.userAgent.match( /iphone/gi );
 
 				var exampleList = document.querySelector( '#example-list' ),
 					effectsList = document.querySelector( '#settings .effects' ),
@@ -130,15 +138,28 @@
 
 				var html = '';
 
-				// Android doesn't perform very well with 30+ items so let's
-				// limit it until further optimized
-				if( navigator.userAgent.match( /android/gi ) ) entries.length = 30;
+				// Unfortunately all devices aren't capable of running very long lists
+				// so let's adapt in favor of smooth updates
+				if( IS_ANDROID ) entries.length = 30;
+				if( IS_IPHONE ) entries.length = 60;
 
 				for( var i = 0, len = entries.length; i < len; i++ ) {
-					html += '<li>'+ entries[i] +'</li>';
+					// The cache class is applied to force Android to run
+					// all list items through the GPU at start
+					var attributes = IS_ANDROID ? 'class="cache"' : '';
+
+					html += '<li ' + attributes + '>'+ entries[i] +'</li>';
 				}
 
 				exampleList.innerHTML = html;
+
+				if( IS_ANDROID ) {
+					var elements = exampleList.querySelectorAll( 'li' );
+
+					for( var i = 0, len = elements.length; i < len; i++ ) {
+						elements[i].classList.remove( 'cache' );
+					}
+				}
 
 				// Run an initial height update
 				updateHeight();
