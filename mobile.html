@@ -99,13 +99,12 @@
 			<p>
 				stroll.js - CSS3 scroll effects. <small>Created by <a href="http://twitter.com/hakimel">@hakimel</a>.</small>
 			</p>
-			<ul class="effects flip">
+			<ul class="effects fly-simplified">
 				<li class="curl">Curl</li>
 				<li class="helix">Helix</li>
 				<li class="flip">Flip</li>
 				<li class="wave">Wave</li>
 				<li class="fly-simplified">Fly</li>
-				<li class="grow">Grow</li>
 				<li class="cards">Cards</li>
 				<li class="fan">Fan</li>
 				<li class="tilt">Tilt</li>
@@ -179,6 +178,8 @@
 					}
 					else {
 						document.body.classList.add( 'opened' );
+
+						stroll.bind( effectsList );
 					}
 				}, false );
 
