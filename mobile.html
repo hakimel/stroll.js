@@ -182,23 +182,21 @@
 					}
 				}, false );
 
-				effectsList.addEventListener( 'touchstart', function( event ) {
-					if( event.target && /^li$/gi.test( event.target.nodeName ) ) {
-						changeEffect( event.target.className );
-
-						// Close the settings panel
-						document.body.classList.remove( 'opened' );
-					}
-				}, true );
-
+				// Monitors clicks on effect types in the settings panel
 				effectsList.addEventListener( 'touchend', function( event ) {
-					if( event.target && /^li$/gi.test( event.target.nodeName ) ) {
-						changeEffect( event.target.className );
+					// TODO Figure out a cleaner way to prevent propagation from
+					// within stroll.js
+					setTimeout( function() {
+						if( !event.defaultPrevented ) {
+							if( event.target && event.target.nodeName.toLowerCase() === 'li' ) {
+								changeEffect( event.target.className );
 
-						// Close the settings panel
-						document.body.classList.remove( 'opened' );
-					}
-				}, true );
+								// Close the settings panel
+								document.body.classList.remove( 'opened' );
+							}
+						}
+					}, 0 );
+				}, false );
 
 				/**
 				 * Changes to a new type of effect style, this also updates 

@@ -395,8 +395,7 @@
 
 		// If a swipe was captured, prevent event propagation
 		if( Math.abs( this.velocity ) > 4 || Math.abs( distanceMoved ) > 10 ) {
-			event.stopImmediatePropagation();
-			return false;
+			event.preventDefault();
 		}
 	};
 
