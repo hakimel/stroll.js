@@ -9,7 +9,10 @@
 		<meta name="description" content="A set of list scroll effects applied via CSS.">
 		<meta name="author" content="Hakim El Hattab">
 
-		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1" />
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1" />
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		
 		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 		
@@ -34,11 +37,12 @@
 				-webkit-transform: rotateY( 1deg );
 			}
 
-			#settings {
+			.settings {
+				display: none;
 				position: absolute;
 				width: 100%;
 				height: 100%;
-				top: -150%;
+				top: 0;
 				left: 0;
 				z-index: 2;
 
@@ -50,26 +54,27 @@
 				     -o-transition: all 0.3s ease;
 				        transition: all 0.3s ease;
 			}
-				#settings.opened {
-					top: 0;
+				.opened .settings {
+					display: block;
 				}
-				#settings li {
+
+				.settings .effects li {
 					color: #fff;
-					background: rgba( 0, 0, 0, 0.5 );
+					background: #000;
 				}
-				#settings li:nth-child(odd) {
+				.settings .effects li:nth-child(odd) {
 					border-top: 1px solid #333;
 					border-bottom: 1px solid #333;
 				}
-				#settings li.active {
+				.settings .effects li.active {
 					color: #70df54;
 				}
-				#settings p {
+				.settings p {
 					padding: 5px 50px 5px 20px;
 				}
 
-			#settings-toggle {
-				position: absolute;
+			.settings-toggle {
+				position: fixed;
 				width: 32px;
 				height: 32px;
 				top: 10px;
@@ -81,7 +86,7 @@
 
 				background: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWVJREFUeNpiYCAPJADxfzScwEBHcB+LA87Ty3IHLJbDsAG1LAEF53ogDsAiNx+PA+bjMSuB3PgFBXcDECsQ8D1yKIDU9gPxe1LTSQIRFlCKURzBhOYAfzqkIRQ7mNEkOXHEOzVBJRDfwKfgPQ2D/z66ZcxYHCABxBY08v1EID6ALMCIRZECNpeigQNQwz4g6YmH5hJ8QBGIHxByZQCeIHxPICsRykUOhEq4+QQMCCCjHMFWWDmgazhPRALaT0Jc7ycyQYJDk9gUHEBiUU6UuUwkGHqBBLUPiFXIxDDAgBQHkFLVKpBa9d4fgER4Hj1L0zMbGpDb4qG0IMKwmJKieCFSaqdqUdxAw9qwn9wWL7Xwe0oqIpo0ydDbA+1ArEGH8mclroJoIx0s30hqPn4PTTzENssdoGobsKQnkvoGuDoTpHZMAkjtmFDSNXNgoBM4T0yLlxjATKYDfmKpFwpJbDOAAUCAAQA1C13UHZxFWAAAAABJRU5ErkJggg==) no-repeat;
 			}
-				#settings-toggle.opened {
+				.opened .settings-toggle {
 					background: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAS5JREFUeNrUV4sRwiAMDZ2AETpCnUC7QUfoKG7CCm6gToAjuIFugImHPbxrS6Ag+O7etT3SvPALQQATxpgOHwNyjzwsmF2QV+RJCHGDFEDhEalNOOifcYtwizyb7SAfbaj4gHyYdCBfQ8iQ58LI6XlufI2EcOccHxopIS+eyB3ukjt9NE6D+oE4WA0VM++KuR21teWvB4ZjZe2kx5bapLX1BaGnDMcRd4JdCmISd2x9QXSNTa9r6FzHuHhoEfVIN9XSe2/bpkDpX4/vAZjZbq53n5FYa/NmSQjM7XNCseJvQMQBI1cSmQw9uCDylJMpxAkNlMY/TUG2RVh8Gx43iIfYzOFYPBWXP4yqOI5tECkqYHalXE1JVrworassr+JiUsXVLOHl1NtrUfp6/hJgANSnkcpCjbkhAAAAAElFTkSuQmCC) no-repeat;
 				}
 		</style>
@@ -89,8 +94,8 @@
 	
 	<body>
 
-		<div id="settings-toggle"></div>
-		<aside id="settings">
+		<div class="settings-toggle"></div>
+		<aside class="settings">
 			<p>
 				stroll.js - CSS3 scroll effects. <small>Created by <a href="http://twitter.com/hakimel">@hakimel</a>.</small>
 			</p>
@@ -98,9 +103,6 @@
 				<li class="curl">Curl</li>
 				<li class="helix">Helix</li>
 				<li class="flip">Flip</li>
-				<!-- Disabled, transform origin z is causing funky results in Mobile Safari -->
-				<!-- <li class="fly">Fly</li> -->
-				<!-- <li class="fly-reverse">Fly-Reverse</li> -->
 				<li class="wave">Wave</li>
 				<li class="fan">Fan</li>
 				<li class="tilt">Tilt</li>
@@ -110,7 +112,7 @@
 			</ul>
 		</aside>
 
-		<ul id="example-list" class="curl">
+		<ul class="example-list" class="curl">
 			<!-- For this demo, items are created via JS -->
 		</ul>
 
@@ -131,10 +133,10 @@
 				var IS_ANDROID = navigator.userAgent.match( /android/gi ),
 					IS_IPHONE = navigator.userAgent.match( /iphone/gi );
 
-				var exampleList = document.querySelector( '#example-list' ),
-					effectsList = document.querySelector( '#settings .effects' ),
-					settingsToggle = document.querySelector( '#settings-toggle' ),
-					settingsPanel = document.querySelector( '#settings' );
+				var exampleList = document.querySelector( '.example-list' ),
+					effectsList = document.querySelector( '.settings .effects' ),
+					settingsToggle = document.querySelector( '.settings-toggle' ),
+					settingsPanel = document.querySelector( '.settings' );
 
 				var html = '';
 
@@ -154,10 +156,10 @@
 				exampleList.innerHTML = html;
 
 				if( IS_ANDROID ) {
-					var elements = exampleList.querySelectorAll( 'li' );
+					var exampleElements = exampleList.querySelectorAll( 'li' );
 
-					for( var i = 0, len = elements.length; i < len; i++ ) {
-						elements[i].classList.remove( 'cache' );
+					for( var i = 0, len = exampleElements.length; i < len; i++ ) {
+						exampleElements[i].classList.remove( 'cache' );
 					}
 				}
 
@@ -169,13 +171,11 @@
 				// Toggle the appearance of the settings panel when the
 				// button is tapped
 				settingsToggle.addEventListener( 'touchstart', function( event ) {
-					if( /open/gi.test( settingsPanel.className ) ) {
-						settingsPanel.classList.remove( 'opened' );
-						settingsToggle.classList.remove( 'opened' );
+					if( /open/gi.test( document.body.className ) ) {
+						document.body.classList.remove( 'opened' );
 					}
 					else {
-						settingsPanel.classList.add( 'opened' );
-						settingsToggle.classList.add( 'opened' );
+						document.body.classList.add( 'opened' );
 					}
 				}, false );
 
@@ -184,14 +184,13 @@
 						changeEffect( event.target.className );
 
 						// Close the settings panel
-						settingsPanel.classList.remove( 'opened' );
-						settingsToggle.classList.remove( 'opened' );
+						document.body.classList.remove( 'opened' );
 					}
-				}, false );
+				}, true );
 
 				function changeEffect( type ) {
-					var previousSelector = document.querySelector( '#settings .effects .' + exampleList.className ),
-						currentSelector = document.querySelector( '#settings .effects .' + type );
+					var previousSelector = document.querySelector( '.settings .effects .' + exampleList.className ),
+						currentSelector = document.querySelector( '.settings .effects .' + type );
 					
 					exampleList.className = type;
 

@@ -371,11 +371,11 @@
 	}
 
 	TouchList.prototype.onTouchEnd = function( event ) {
+		var distanceMoved = this.touch.start - this.touch.value;
+
 		if( !this.touch.isAccellerating ) {
 			this.velocity = ( this.touch.start - this.touch.value ) / 10;
 		}
-
-		var distanceMoved = this.touch.offset;
 
 		// Don't apply any velocity if the touch ended in a still state
 		if( Date.now() - this.touch.lastMove > 200 || Math.abs( this.touch.previous - this.touch.value ) < 5 ) {
