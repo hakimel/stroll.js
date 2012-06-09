@@ -3,7 +3,7 @@
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
  * 
- * Created by Hakim El Hattab, http://hakim.se
+ * Copyright (C) 2012 Hakim El Hattab, http://hakim.se
  */
 (function(){
 
@@ -240,7 +240,8 @@
 	/**
 	 * A list specifically for touch devices. Simulates the style 
 	 * of scrolling you'd see on a touch device but does not rely 
-	 * on webkit-overflow-scrolling.
+	 * on webkit-overflow-scrolling since that makes it impossible 
+	 * to read the up-to-date scroll position.
 	 */
 	function TouchList( element ) {
 		this.element = element;
@@ -297,6 +298,10 @@
 		this.bind();
 	}
 
+	/**
+	 * Binds the events for this list. References to proxy methods 
+	 * are kept for unbinding if the list is disposed of.
+	 */
 	TouchList.prototype.bind = function() {
 		var scope = this;
 
@@ -504,14 +509,14 @@
 	}
 
 	window.requestAnimFrame = (function(){
-	   return  window.requestAnimationFrame       ||
-	 		  window.webkitRequestAnimationFrame ||
-	 		  window.mozRequestAnimationFrame    ||
-	 		  window.oRequestAnimationFrame      ||
-	 		  window.msRequestAnimationFrame     ||
-	 		  function( callback ){
-	 			window.setTimeout(callback, 1000 / 60);
-	 		  };
-	 })()
+		return  window.requestAnimationFrame       ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame    ||
+				window.oRequestAnimationFrame      ||
+				window.msRequestAnimationFrame     ||
+				function( callback ){
+					window.setTimeout(callback, 1000 / 60);
+				};
+	})()
 
 })();
