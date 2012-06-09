@@ -175,8 +175,10 @@
 		// One loop to get the offsets from the DOM
 		for( var i = 0, len = this.items.length; i < len; i++ ) {
 			var item = this.items[i];
-			item._offsetTop = item.offsetTop;
 			item._offsetHeight = item.offsetHeight;
+			item._offsetTop = item.offsetTop;
+			item._offsetBottom = item._offsetTop + item._offsetHeight;
+			item._state = '';
 		}
 
 		// Force an update
@@ -197,26 +199,28 @@
 			// One loop to make our changes to the DOM
 			for( var i = 0, len = this.items.length; i < len; i++ ) {
 				var item = this.items[i];
-				var itemClass = item.className;
 
 				// Above list viewport
-				if( item._offsetTop + item._offsetHeight < scrollTop ) {
+				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( itemClass.indexOf( 'past' ) === -1 ) {
+					if( item._state !== 'past' ) {
+						item._state = 'past';
 						item.classList.add( 'past' );
 					}
 				}
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( itemClass.indexOf( 'future' ) === -1 ) {
+					if( item._state !== 'future' ) {
+						item._state = 'future';
 						item.classList.add( 'future' );
 					}
 				}
 				// Inside of list viewport
-				else if( itemClass.length ) {
-					item.classList.remove( 'past' );
-					item.classList.remove( 'future' );
+				else if( item._state ) {
+					if( item._state === 'past' ) item.classList.remove( 'past' );
+					if( item._state === 'future' ) item.classList.remove( 'future' );
+					item._state = '';
 				}
 			}
 		}
