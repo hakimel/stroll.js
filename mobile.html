@@ -73,6 +73,10 @@
 					padding: 0px 50px 0px 20px;
 				}
 
+				.android .settings .effects li[data-exclude*="android"] {
+					display: none;
+				}
+
 			.settings-toggle {
 				position: fixed;
 				width: 32px;
@@ -107,10 +111,10 @@
 				<li class="wave">Wave</li>
 				<li class="fly-simplified">Fly</li>
 				<li class="cards">Cards</li>
-				<li class="fan">Fan</li>
+				<li class="fan" data-exclude="android">Fan</li>
 				<li class="tilt">Tilt</li>
-				<li class="papercut">Papercut</li>
-				<li class="zipper">Zipper</li>
+				<li class="papercut" data-exclude="android">Papercut</li>
+				<li class="zipper" data-exclude="android">Zipper</li>
 				<li class="twirl">Twirl</li>
 			</ul>
 		</div>
@@ -158,6 +162,8 @@
 				exampleList.innerHTML = html;
 
 				if( IS_ANDROID ) {
+					document.body.classList.add( 'android' );
+
 					var exampleElements = exampleList.querySelectorAll( 'li' );
 
 					for( var i = 0, len = exampleElements.length; i < len; i++ ) {
