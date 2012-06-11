@@ -273,28 +273,31 @@
 
 	/** 
 	 * Fetches the latest properties from the DOM to ensure that 
-	 * this list is in sync with its contents. 
+	 * this list is in sync with its contents. This is typically 
+	 * only used once (per list) at initialization.
 	 */
 	TouchList.prototype.sync = function() {
 		this.items = Array.prototype.slice.apply( this.element.children );
 
-		// Cache the list height so we don't need to go back to the DOM so much
 		this.listHeight = this.element.offsetHeight;
 
-		this.top.natural = this.element.scrollTop;
-		this.top.value = this.top.natural;
+		var item;
 
 		// One loop to get the properties we need from the DOM
 		for( var i = 0, len = this.items.length; i < len; i++ ) {
-			var item = this.items[i];
+			item = this.items[i];
 			item._offsetHeight = item.offsetHeight;
 			item._offsetTop = item.offsetTop;
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
 			item._state = '';
 
-			// Animating ppacity is a MAJOR performance hit on mobile so we can't allow it
+			// Animating opacity is a MAJOR performance hit on mobile so we can't allow it
 			item.style.opacity = 1;
 		}
+
+		this.top.natural = this.element.scrollTop;
+		this.top.value = this.top.natural;
+		this.top.max = item._offsetBottom - this.listHeight;
 
 		// Force an update
 		this.update( true );
@@ -365,7 +368,7 @@
 			if( this.touch.isAccellerating && sameDirection ) {
 				clearInterval( this.touch.accellerateTimeout );
 
-				// Increase velocity exponentially
+				// Increase velocity significantly
 				this.velocity += ( this.touch.previous - this.touch.value ) / 10;
 			}
 			else {
@@ -383,6 +386,7 @@
 		var distanceMoved = this.touch.start - this.touch.value;
 
 		if( !this.touch.isAccellerating ) {
+			// Apply velocity based on the start position of the touch
 			this.velocity = ( this.touch.start - this.touch.value ) / 10;
 		}
 
@@ -419,7 +423,9 @@
 		if( this.velocity || this.touch.offset ) {
 			// Scroll the DOM and add on the offset from touch
 			this.element.scrollTop = scrollTop;
-			scrollTop = this.element.scrollTop;
+
+			// Keep the scroll value within bounds
+			scrollTop = Math.max( 0, Math.min( this.element.scrollTop, this.top.max ) );
 
 			// Cache the currently set scroll top and touch offset
 			this.top.value = scrollTop - this.touch.offset;
