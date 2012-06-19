@@ -6,7 +6,7 @@
 		
 		<title>stroll.js - CSS3 Scroll Effects</title>
 
-		<meta name="description" content="A set of list scroll effects applied via CSS.">
+		<meta name="description" content="A collection of CSS3 scroll effects and animations.">
 		<meta name="author" content="Hakim El Hattab">
 
 		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1" />
@@ -30,8 +30,9 @@
 				width: 100%; 
 			}
 				ul li {
-					-webkit-transform: translate3d( 0, 0, 1px );
 					padding: 25px 20px;
+
+					-webkit-transform: translate3d( 0, 0, 1px );
 				}
 				ul li.cache {
 					-webkit-transform: rotateY( 1deg );
@@ -147,13 +148,13 @@
 				var html = '';
 
 				// Unfortunately all devices aren't capable of running very long lists
-				// so let's adapt in favor of smooth updates
+				// so let's adapt in favor of smooth animations
 				if( IS_ANDROID ) entries.length = 30;
 				if( IS_IPHONE ) entries.length = 60;
 
 				for( var i = 0, len = entries.length; i < len; i++ ) {
 					// The cache class is applied as an attempt to force Android to run
-					// all list items through the GPU at start
+					// all list items through the GPU at start to avoid lag later
 					var attributes = IS_ANDROID ? 'class="cache"' : '';
 
 					html += '<li ' + attributes + '>'+ entries[i] +'</li>';
