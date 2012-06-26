@@ -1,10 +1,10 @@
 # stroll.js – because it scrolls, and trolls.
 
-A collection of CSS list scroll effects. Pull requests welcome!
+A collection of CSS list scroll effects. Works in browsers with support for CSS 3D transforms including a special touch-enabled mode for iOS & Android 4.x.
 
 Curious about how this looks in action? [Check out the demo page](http://lab.hakim.se/scroll-effects/).
 
-# Usage
+## Usage
 
 The style of scroll effect is determined via the class that is set on the list. Once the class is set, stroll.js needs to be told to monitor that list via the bind method:
 
@@ -34,7 +34,21 @@ To disable the effect on an already bound list you can use the unbind method:
 stroll.unbind( selector/element/array );
 ```
 
-# Contributors
+## History
+
+#### 1.2 (master/beta)
+- Mobile support (iOS/Android 4+)
+- New effects
+
+#### 1.1
+- Optimizations
+- New API
+- New effects
+
+#### 1.0
+- Initial release
+
+## Contributors
 
 - [Paul Irish](https://github.com/paulirish) - Perf improvements
 - [Felix Gnass](http://github.com/fgnass) - Perf improvements
@@ -42,7 +56,7 @@ stroll.unbind( selector/element/array );
 - [Dave Arel](http://github.com/davearel) - Fade effect
 - [Erick Daniszewski](http://github.com/edaniszewski) - Twirl Effect
 
-# License
+## License
 
 MIT licensed
 
