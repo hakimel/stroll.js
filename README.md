@@ -8,7 +8,8 @@ Curious about how this looks in action? [Check out the demo page](http://lab.hak
 
 The style of scroll effect is determined via the class that is set on the list. Once the class is set, stroll.js needs to be told to monitor that list via the bind method:
 
-```
+
+```javascript
 // Bind via selectors
 stroll.bind( '#main ul' );
 
@@ -19,17 +20,21 @@ stroll.bind( document.getElementById( 'some-list' ) );
 stroll.bind( $( '#main .some-list' ) );
 ```
 
+
 You can provide an additional parameter with more options:
 
-```
+
+```javascript
 // Makes stroll.js monitor changes to the DOM (like adding or resizing items). 
-// This is taxing on performance so use scarcely. Defaults to false.
+// This is taxing on performance, so use scarcely. Defaults to false.
 stroll.bind( '#main ul', { live: true } );
 ```
 
-To disable the effect on an already bound list you can use the unbind method:
 
-```
+To disable the effect on an already-bound list, you can use `stroll.unbind()`:
+
+
+```javascript
 // Same target options as stroll.bind
 stroll.unbind( selector/element/array );
 ```
