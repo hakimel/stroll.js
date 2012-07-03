@@ -18,6 +18,10 @@
 	// All of the lists that are currently bound
 	var lists = [];
 
+	var	STATE_NULL		= null,
+		STATE_PAST		= 'past',
+		STATE_FUTURE	= 'future';
+
 	// Set to true when there are lists to refresh
 	var active = false;
 
@@ -178,7 +182,7 @@
 			item._offsetHeight = item.offsetHeight;
 			item._offsetTop = item.offsetTop;
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
-			item._state = '';
+			item._state = STATE_NULL;
 		}
 
 		// Force an update
@@ -203,24 +207,24 @@
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( item._state !== 'past' ) {
-						item._state = 'past';
-						item.classList.add( 'past' );
+					if( item._state !== STATE_PAST ) {
+						item._state = STATE_PAST;
+						item.classList.add( STATE_PAST );
 					}
 				}
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( item._state !== 'future' ) {
-						item._state = 'future';
-						item.classList.add( 'future' );
+					if( item._state !== STATE_FUTURE ) {
+						item._state = STATE_FUTURE;
+						item.classList.add( STATE_FUTURE );
 					}
 				}
 				// Inside of list viewport
 				else if( item._state ) {
-					if( item._state === 'past' ) item.classList.remove( 'past' );
-					if( item._state === 'future' ) item.classList.remove( 'future' );
-					item._state = '';
+					if( item._state === STATE_PAST ) item.classList.remove( STATE_PAST );
+					if( item._state === STATE_FUTURE ) item.classList.remove( STATE_FUTURE );
+					item._state = STATE_NULL;
 				}
 			}
 		}
@@ -235,8 +239,8 @@
 		for( var j = 0, len = this.items.length; j < len; j++ ) {
 			var item = this.items[j];
 
-			item.classList.remove( 'past' );
-			item.classList.remove( 'future' );
+			item.classList.remove( STATE_PAST );
+			item.classList.remove( STATE_FUTURE );
 		}
 	}
 
@@ -289,7 +293,7 @@
 			item._offsetHeight = item.offsetHeight;
 			item._offsetTop = item.offsetTop;
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
-			item._state = '';
+			item._state = STATE_NULL;
 
 			// Animating opacity is a MAJOR performance hit on mobile so we can't allow it
 			item.style.opacity = 1;
@@ -456,24 +460,24 @@
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity <= 0 && item._state !== 'past' ) {
-						item.classList.add( 'past' );
-						item._state = 'past';
+					if( this.velocity <= 0 && item._state !== STATE_PAST ) {
+						item.classList.add( STATE_PAST );
+						item._state = STATE_PAST;
 					}
 				}
 				// Below list viewport
 				else if( item._offsetTop > scrollBottom ) {
 					// Exclusion via string matching improves performance
-					if( this.velocity >= 0 && item._state !== 'future' ) {
-						item.classList.add( 'future' );
-						item._state = 'future';
+					if( this.velocity >= 0 && item._state !== STATE_FUTURE ) {
+						item.classList.add( STATE_FUTURE );
+						item._state = STATE_FUTURE;
 					}
 				}
 				// Inside of list viewport
 				else if( item._state ) {
-					if( item._state === 'past' ) item.classList.remove( 'past' );
-					if( item._state === 'future' ) item.classList.remove( 'future' );
-					item._state = '';
+					if( item._state === STATE_PAST ) item.classList.remove( STATE_PAST );
+					if( item._state === STATE_FUTURE ) item.classList.remove( STATE_FUTURE );
+					item._state = STATE_NULL;
 				}
 			}
 		}
