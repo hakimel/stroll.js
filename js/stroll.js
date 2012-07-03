@@ -89,10 +89,10 @@
 	 * @param {HTMLElement} element 
 	 */
 	function remove( element ) {
-		for( var i = 0; i < lists.length; i++ ) {
-			var list = lists[i];
+		for( var list, i = 0, len = lists.length; i < len; i++ ) {
+			list = lists[i];
 
-			if( list.element == element ) {
+			if( list && list.element === element ) {
 				list.destroy();
 				lists.splice( i, 1 );
 				i--;
@@ -109,8 +109,10 @@
 	 * Checks if the specified element has already been bound.
 	 */
 	function contains( element ) {
-		for( var i = 0, len = lists.length; i < len; i++ ) {
-			if( lists[i].element == element ) {
+		for( var list, i = 0, len = lists.length; i < len; i++ ) {
+			list = lists[i];
+
+			if( list && list.element === element ) {
 				return true;
 			}
 		}
@@ -177,8 +179,8 @@
 		this.listHeight = this.element.offsetHeight;
 
 		// One loop to get the offsets from the DOM
-		for( var i = 0, len = this.items.length; i < len; i++ ) {
-			var item = this.items[i];
+		for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
+			item = items[i];
 			item._offsetHeight = item.offsetHeight;
 			item._offsetTop = item.offsetTop;
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
@@ -201,8 +203,8 @@
 			this.lastTop = scrollTop;
 
 			// One loop to make our changes to the DOM
-			for( var i = 0, len = this.items.length; i < len; i++ ) {
-				var item = this.items[i];
+			for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
+				item = items[i];
 
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
@@ -236,8 +238,8 @@
 	List.prototype.destroy = function() {
 		clearInterval( this.syncInterval );
 
-		for( var j = 0, len = this.items.length; j < len; j++ ) {
-			var item = this.items[j];
+		for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
+			item = items[i];
 
 			item.classList.remove( STATE_PAST );
 			item.classList.remove( STATE_FUTURE );
@@ -285,11 +287,9 @@
 
 		this.listHeight = this.element.offsetHeight;
 
-		var item;
-
 		// One loop to get the properties we need from the DOM
-		for( var i = 0, len = this.items.length; i < len; i++ ) {
-			item = this.items[i];
+		for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
+			item = items[i];
 			item._offsetHeight = item.offsetHeight;
 			item._offsetTop = item.offsetTop;
 			item._offsetBottom = item._offsetTop + item._offsetHeight;
@@ -454,8 +454,8 @@
 			var scrollBottom = scrollTop + this.listHeight;
 			
 			// One loop to make our changes to the DOM
-			for( var i = 0, len = this.items.length; i < len; i++ ) {
-				var item = this.items[i];
+			for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
+				item = items[i];
 
 				// Above list viewport
 				if( item._offsetBottom < scrollTop ) {
