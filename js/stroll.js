@@ -9,9 +9,11 @@
 
 	"use strict";
 
+	var _slice = [].slice;
+
 	// When a list is configured as 'live', this is how frequently 
 	// the DOM will be polled for changes
-	var LIVE_INTERVAL = 500;
+	var SYNC_INTERVAL = 500;
 
 	var IS_TOUCH_DEVICE = !!( 'ontouchstart' in window );
 
@@ -21,22 +23,6 @@
 	var	STATE_NULL		= null,
 		STATE_PAST		= 'past',
 		STATE_FUTURE	= 'future';
-
-	// Set to true when there are lists to refresh
-	var active = false;
-
-	/**
-	 * Updates all currently bound lists.
-	 */
-	function refresh() {
-		if( active ) {
-			requestAnimFrame( refresh );
-			
-			for( var i = 0, len = lists.length; i < len; i++ ) {
-				lists[i].update();
-			}
-		}
-	}
 
 	/**
 	 * Starts monitoring a list and applies classes to each of 
@@ -60,26 +46,12 @@
 			remove( element );
 		}
 
-		var list = IS_TOUCH_DEVICE ? new TouchList( element ) : new List( element );
-
-		// Handle options
-		if( options && options.live ) {
-			list.syncInterval = setInterval( function() {
-				list.sync.call( list );
-			}, LIVE_INTERVAL );
-		}
-
-		// Synchronize the list with the DOM
-		list.sync();
+		var list = IS_TOUCH_DEVICE
+			? new TouchList( element, options )
+			: new List( element, options );
 
 		// Add this element to the collection
 		lists.push( list );
-
-		// Start refreshing if this was the first list to be added
-		if( lists.length === 1 ) {
-			active = true;
-			refresh();
-		}
 	}
 
 	/**
@@ -97,11 +69,6 @@
 				lists.splice( i, 1 );
 				i--;
 			}
-		}
-
-		// Stopped refreshing if the last list was removed
-		if( lists.length === 0 ) {
-			active = false;
 		}
 	}
 
@@ -164,16 +131,43 @@
 	 * The basic type of list; applies past & future classes to 
 	 * list items based on scroll state.
 	 */
-	function List( element ) {
+	function List( element, options ) {
+		options = options || {};
+
 		this.element = element;
+		this.lock = false;
+
+		if ( this.element ) {
+			this.init();
+
+			if ( !options.live ) {
+				this.sync();
+			} else {
+				var doSync = (function() {
+					this.sync();
+					this.syncTimeout = window.setTimeout( doSync, SYNC_INTERVAL );
+				}).bind( this );
+				doSync();
+			}
+		}
 	}
+
+	List.prototype.init = function() {
+		this.scrollDelegate = this.update.bind( this );
+		this.element.addEventListener( 'scroll', this.scrollDelegate, false );
+	};
+
+	List.prototype.unInit = function() {
+		this.element.removeEventListener( 'scroll', this.scrollDelegate, false );
+		this.scrollDelegate = null;
+	};
 
 	/** 
 	 * Fetches the latest properties from the DOM to ensure that 
 	 * this list is in sync with its contents. 
 	 */
 	List.prototype.sync = function() {
-		this.items = Array.prototype.slice.apply( this.element.children );
+		this.items = _slice.apply( this.element.children );
 
 		// Caching some heights so we don't need to go back to the DOM so much
 		this.listHeight = this.element.offsetHeight;
@@ -189,7 +183,7 @@
 
 		// Force an update
 		this.update( true );
-	}
+	};
 
 	/** 
 	 * Apply past/future classes to list items outside of the viewport
@@ -235,13 +229,16 @@
 
 			this.lock = false;
 		}
-	}
+	};
 
 	/**
 	 * Cleans up after this list and disposes of it.
 	 */
 	List.prototype.destroy = function() {
-		clearInterval( this.syncInterval );
+		if ( this.syncTimeout ) {
+			window.clearTimeout( this.syncTimeout );
+			this.syncTimeout = null;
+		}
 
 		for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
 			item = items[i];
@@ -249,7 +246,9 @@
 			item.classList.remove( STATE_PAST );
 			item.classList.remove( STATE_FUTURE );
 		}
-	}
+
+		this.unInit();
+	};
 
 
 	/**
@@ -258,8 +257,9 @@
 	 * on webkit-overflow-scrolling since that makes it impossible 
 	 * to read the up-to-date scroll position.
 	 */
-	function TouchList( element ) {
-		this.element = element;
+	function TouchList( element, options ) {
+		List.apply( this, arguments );
+
 		this.element.style.overflow = 'hidden';
 
 		this.top = {
@@ -281,6 +281,25 @@
 		this.velocity = 0;
 	}
 	TouchList.prototype = new List();
+	TouchList.prototype.constructor = TouchList;
+
+	TouchList.prototype.init = function() {
+		this.touchStartDelegate = this.onTouchStart.bind( this );
+		this.touchMoveDelegate = this.onTouchMove.bind( this );
+		this.touchEndDelegate = this.onTouchEnd.bind( this );
+		this.element.addEventListener( 'touchstart', this.touchStartDelegate, false );
+		this.element.addEventListener( 'touchmove', this.touchMoveDelegate, false );
+		this.element.addEventListener( 'touchend', this.touchEndDelegate, false );
+	};
+
+	TouchList.prototype.unInit = function() {
+		this.element.removeEventListener( 'touchstart', this.touchStartDelegate, false );
+		this.element.removeEventListener( 'touchmove', this.touchMoveDelegate, false );
+		this.element.removeEventListener( 'touchend', this.touchEndDelegate, false );
+		this.touchStartDelegate = null;
+		this.touchMoveDelegate = null;
+		this.touchEndDelegate = null;
+	};
 
 	/** 
 	 * Fetches the latest properties from the DOM to ensure that 
@@ -288,7 +307,7 @@
 	 * only used once (per list) at initialization.
 	 */
 	TouchList.prototype.sync = function() {
-		this.items = Array.prototype.slice.apply( this.element.children );
+		this.items = _slice.apply( this.element.children );
 
 		this.listHeight = this.element.offsetHeight;
 
@@ -310,37 +329,11 @@
 
 		// Force an update
 		this.update( true );
-
-		this.bind();
-	}
-
-	/**
-	 * Binds the events for this list. References to proxy methods 
-	 * are kept for unbinding if the list is disposed of.
-	 */
-	TouchList.prototype.bind = function() {
-		var scope = this;
-
-		this.touchStartDelegate = function( event ) {
-			scope.onTouchStart( event );
-		};
-
-		this.touchMoveDelegate = function( event ) {
-			scope.onTouchMove( event );
-		};
-
-		this.touchEndDelegate = function( event ) {
-			scope.onTouchEnd( event );
-		};
-
-		this.element.addEventListener( 'touchstart', this.touchStartDelegate, false );
-		this.element.addEventListener( 'touchmove', this.touchMoveDelegate, false );
-		this.element.addEventListener( 'touchend', this.touchEndDelegate, false );
-	}
+	};
 
 	TouchList.prototype.onTouchStart = function( event ) {
 		event.preventDefault();
-		
+
 		if( event.touches.length === 1 ) {
 			this.touch.isActive = true;
 			this.touch.start = event.touches[0].clientY;
@@ -362,7 +355,7 @@
 				this.velocity = 0;
 			}
 		}
-	}
+	};
 
 	TouchList.prototype.onTouchMove = function( event ) {
 		if( event.touches.length === 1 ) {
@@ -373,7 +366,7 @@
 
 			var sameDirection = ( this.touch.value > this.touch.previous && this.velocity < 0 )
 								|| ( this.touch.value < this.touch.previous && this.velocity > 0 );
-			
+
 			if( this.touch.isAccellerating && sameDirection ) {
 				clearInterval( this.touch.accellerateTimeout );
 
@@ -389,7 +382,7 @@
 
 			this.touch.previous = previous;
 		}
-	}
+	};
 
 	TouchList.prototype.onTouchEnd = function( event ) {
 		var distanceMoved = this.touch.start - this.touch.value;
@@ -458,7 +451,7 @@
 			this.top.value = scrollTop - this.touch.offset;
 
 			var scrollBottom = scrollTop + this.listHeight;
-			
+
 			// One loop to make our changes to the DOM
 			for( var item, items = this.items, i = 0, len = items.length; i < len; i++ ) {
 				item = items[i];
@@ -493,17 +486,6 @@
 		}
 	};
 
-	/**
-	 * Cleans up after this list and disposes of it.
-	 */
-	TouchList.prototype.destroy = function() {
-		List.prototype.destroy.apply( this );
-
-		this.element.removeEventListener( 'touchstart', this.touchStartDelegate, false );
-		this.element.removeEventListener( 'touchmove', this.touchMoveDelegate, false );
-		this.element.removeEventListener( 'touchend', this.touchEndDelegate, false );
-	}
-
 
 	/**
 	 * Public API
@@ -530,7 +512,7 @@
 				batch( target, remove );
 			}
 		}
-	}
+	};
 
 	window.requestAnimFrame = (function(){
 		return  window.requestAnimationFrame       ||
@@ -541,6 +523,6 @@
 				function( callback ){
 					window.setTimeout(callback, 1000 / 60);
 				};
-	})()
+	})();
 
 })();
