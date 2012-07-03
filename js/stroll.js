@@ -490,29 +490,30 @@
 	/**
 	 * Public API
 	 */
-	window.stroll = {
-		/**
-		 * Binds one or more lists for scroll effects.
-		 * 
-		 * @see #add()
-		 */
-		bind: function( target, options ) {
-			if( isCapable() ) {
+	window.stroll = isCapable()
+		? {
+			/**
+			 * Binds one or more lists for scroll effects.
+			 * 
+			 * @see #add()
+			 */
+			bind: function( target, options ) {
 				batch( target, add, options );
-			}
-		},
+			},
 
-		/**
-		 * Unbinds one or more lists from scroll effects.
-		 * 
-		 * @see #remove()
-		 */
-		unbind: function( target ) {
-			if( isCapable() ) {
+			/**
+			 * Unbinds one or more lists from scroll effects.
+			 * 
+			 * @see #remove()
+			 */
+			unbind: function( target ) {
 				batch( target, remove );
 			}
 		}
-	};
+		: {
+			bind: function() {},
+			unbind: function() {}
+		};
 
 	window.requestAnimFrame = (function(){
 		return  window.requestAnimationFrame       ||
