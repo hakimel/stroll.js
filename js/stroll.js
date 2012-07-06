@@ -199,7 +199,8 @@
 			scrollBottom = scrollTop + this.listHeight;
 
 		// Quit if nothing changed
-		if( scrollTop !== this.lastTop || force ) {
+		if( !this.lock && scrollTop !== this.lastTop || force ) {
+			this.lock = true;
 			this.lastTop = scrollTop;
 
 			// One loop to make our changes to the DOM
@@ -212,6 +213,7 @@
 					if( item._state !== STATE_PAST ) {
 						item._state = STATE_PAST;
 						item.classList.add( STATE_PAST );
+						item.classList.remove( STATE_FUTURE );
 					}
 				}
 				// Below list viewport
@@ -220,6 +222,7 @@
 					if( item._state !== STATE_FUTURE ) {
 						item._state = STATE_FUTURE;
 						item.classList.add( STATE_FUTURE );
+						item.classList.remove( STATE_PAST );
 					}
 				}
 				// Inside of list viewport
@@ -229,6 +232,8 @@
 					item._state = STATE_NULL;
 				}
 			}
+
+			this.lock = false;
 		}
 	}
 
@@ -447,7 +452,8 @@
 		}
 
 		// Only proceed if the scroll position has changed
-		if( scrollTop !== this.top.natural || force ) {
+		if( !this.lock && scrollTop !== this.top.natural || force ) {
+			this.lock = true;
 			this.top.natural = scrollTop;
 			this.top.value = scrollTop - this.touch.offset;
 
@@ -462,6 +468,7 @@
 					// Exclusion via string matching improves performance
 					if( this.velocity <= 0 && item._state !== STATE_PAST ) {
 						item.classList.add( STATE_PAST );
+						item.classList.remove( STATE_FUTURE );
 						item._state = STATE_PAST;
 					}
 				}
@@ -470,6 +477,7 @@
 					// Exclusion via string matching improves performance
 					if( this.velocity >= 0 && item._state !== STATE_FUTURE ) {
 						item.classList.add( STATE_FUTURE );
+						item.classList.remove( STATE_PAST );
 						item._state = STATE_FUTURE;
 					}
 				}
@@ -480,6 +488,8 @@
 					item._state = STATE_NULL;
 				}
 			}
+
+			this.lock = false;
 		}
 	};
 
