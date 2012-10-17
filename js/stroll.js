@@ -206,6 +206,7 @@
 					if( item._state !== 'past' ) {
 						item._state = 'past';
 						item.classList.add( 'past' );
+						item.classList.remove( 'future' );
 					}
 				}
 				// Below list viewport
@@ -214,6 +215,7 @@
 					if( item._state !== 'future' ) {
 						item._state = 'future';
 						item.classList.add( 'future' );
+						item.classList.remove( 'past' );
 					}
 				}
 				// Inside of list viewport
