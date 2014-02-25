@@ -2,14 +2,14 @@
  * stroll.js 1.2 - CSS scroll effects
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
- * 
+ *
  * Copyright (C) 2012 Hakim El Hattab, http://hakim.se
  */
 (function(){
 
 	"use strict";
 
-	// When a list is configured as 'live', this is how frequently 
+	// When a list is configured as 'live', this is how frequently
 	// the DOM will be polled for changes
 	var LIVE_INTERVAL = 500;
 
@@ -27,7 +27,7 @@
 	function refresh() {
 		if( active ) {
 			requestAnimFrame( refresh );
-			
+
 			for( var i = 0, len = lists.length; i < len; i++ ) {
 				lists[i].update();
 			}
@@ -35,14 +35,14 @@
 	}
 
 	/**
-	 * Starts monitoring a list and applies classes to each of 
-	 * its contained elements based on its position relative to 
+	 * Starts monitoring a list and applies classes to each of
+	 * its contained elements based on its position relative to
 	 * the list's viewport.
-	 * 
-	 * @param {HTMLElement} element 
+	 *
+	 * @param {HTMLElement} element
 	 * @param {Object} options Additional arguments;
 	 * 	- live; Flags if the DOM should be repeatedly checked for changes
-	 * 			repeatedly. Useful if the list contents is changing. Use 
+	 * 			repeatedly. Useful if the list contents is changing. Use
 	 * 			scarcely as it has an impact on performance.
 	 */
 	function add( element, options ) {
@@ -50,7 +50,7 @@
 		if( !element.nodeName || /^(ul|li)$/i.test( element.nodeName ) === false ) {
 			return false;
 		}
-		// Delete duplicates (but continue and re-bind this list to get the 
+		// Delete duplicates (but continue and re-bind this list to get the
 		// latest properties and list items)
 		else if( contains( element ) ) {
 			remove( element );
@@ -79,10 +79,10 @@
 	}
 
 	/**
-	 * Stops monitoring a list element and removes any classes 
+	 * Stops monitoring a list element and removes any classes
 	 * that were applied to its list items.
-	 * 
-	 * @param {HTMLElement} element 
+	 *
+	 * @param {HTMLElement} element
 	 */
 	function remove( element ) {
 		for( var i = 0; i < lists.length; i++ ) {
@@ -114,10 +114,10 @@
 	}
 
 	/**
-	 * Calls 'method' for each DOM element discovered in 
+	 * Calls 'method' for each DOM element discovered in
 	 * 'target'.
-	 * 
-	 * @param target String selector / array of UL elements / 
+	 *
+	 * @param target String selector / array of UL elements /
 	 * jQuery object / single UL element
 	 * @param method A function to call for each element target
 	 */
@@ -155,16 +155,16 @@
 	}
 
 	/**
-	 * The basic type of list; applies past & future classes to 
+	 * The basic type of list; applies past & future classes to
 	 * list items based on scroll state.
 	 */
 	function List( element ) {
 		this.element = element;
 	}
 
-	/** 
-	 * Fetches the latest properties from the DOM to ensure that 
-	 * this list is in sync with its contents. 
+	/**
+	 * Fetches the latest properties from the DOM to ensure that
+	 * this list is in sync with its contents.
 	 */
 	List.prototype.sync = function() {
 		this.items = Array.prototype.slice.apply( this.element.children );
@@ -185,7 +185,7 @@
 		this.update( true );
 	}
 
-	/** 
+	/**
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	List.prototype.update = function( force ) {
@@ -244,9 +244,9 @@
 
 
 	/**
-	 * A list specifically for touch devices. Simulates the style 
-	 * of scrolling you'd see on a touch device but does not rely 
-	 * on webkit-overflow-scrolling since that makes it impossible 
+	 * A list specifically for touch devices. Simulates the style
+	 * of scrolling you'd see on a touch device but does not rely
+	 * on webkit-overflow-scrolling since that makes it impossible
 	 * to read the up-to-date scroll position.
 	 */
 	function TouchList( element ) {
@@ -273,9 +273,9 @@
 	}
 	TouchList.prototype = new List();
 
-	/** 
-	 * Fetches the latest properties from the DOM to ensure that 
-	 * this list is in sync with its contents. This is typically 
+	/**
+	 * Fetches the latest properties from the DOM to ensure that
+	 * this list is in sync with its contents. This is typically
 	 * only used once (per list) at initialization.
 	 */
 	TouchList.prototype.sync = function() {
@@ -308,7 +308,7 @@
 	}
 
 	/**
-	 * Binds the events for this list. References to proxy methods 
+	 * Binds the events for this list. References to proxy methods
 	 * are kept for unbinding if the list is disposed of.
 	 */
 	TouchList.prototype.bind = function() {
@@ -333,7 +333,7 @@
 
 	TouchList.prototype.onTouchStart = function( event ) {
 		event.preventDefault();
-		
+
 		if( event.touches.length === 1 ) {
 			this.touch.isActive = true;
 			this.touch.start = event.touches[0].clientY;
@@ -366,7 +366,7 @@
 
 			var sameDirection = ( this.touch.value > this.touch.previous && this.velocity < 0 )
 								|| ( this.touch.value < this.touch.previous && this.velocity > 0 );
-			
+
 			if( this.touch.isAccellerating && sameDirection ) {
 				clearInterval( this.touch.accellerateTimeout );
 
@@ -414,7 +414,7 @@
 		}
 	};
 
-	/** 
+	/**
 	 * Apply past/future classes to list items outside of the viewport
 	 */
 	TouchList.prototype.update = function( force ) {
@@ -438,7 +438,7 @@
 			this.velocity *= 0.95;
 		}
 
-		// Cut off early, the last fraction of velocity doesn't have 
+		// Cut off early, the last fraction of velocity doesn't have
 		// much impact on movement
 		if( Math.abs( this.velocity ) < 0.15 ) {
 			this.velocity = 0;
@@ -450,7 +450,7 @@
 			this.top.value = scrollTop - this.touch.offset;
 
 			var scrollBottom = scrollTop + this.listHeight;
-			
+
 			// One loop to make our changes to the DOM
 			for( var i = 0, len = this.items.length; i < len; i++ ) {
 				var item = this.items[i];
@@ -499,7 +499,7 @@
 	window.stroll = {
 		/**
 		 * Binds one or more lists for scroll effects.
-		 * 
+		 *
 		 * @see #add()
 		 */
 		bind: function( target, options ) {
@@ -510,7 +510,7 @@
 
 		/**
 		 * Unbinds one or more lists from scroll effects.
-		 * 
+		 *
 		 * @see #remove()
 		 */
 		unbind: function( target ) {

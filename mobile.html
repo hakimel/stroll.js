@@ -1,9 +1,9 @@
-<!doctype html>  
+<!doctype html>
 <html lang="en">
-	
+
 	<head>
 		<meta charset="utf-8">
-		
+
 		<title>stroll.js - CSS3 Scroll Effects</title>
 
 		<meta name="description" content="A collection of CSS3 scroll effects and animations.">
@@ -13,9 +13,9 @@
 
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		
+
 		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-		
+
 		<link rel="stylesheet" href="css/example.css">
 		<link rel="stylesheet" href="css/stroll.css">
 
@@ -27,7 +27,7 @@
 
 			ul {
 				position: relative;
-				width: 100%; 
+				width: 100%;
 			}
 				ul li {
 					padding: 25px 20px;
@@ -96,7 +96,7 @@
 				}
 		</style>
 	</head>
-	
+
 	<body>
 
 		<div class="settings-toggle"></div>
@@ -208,15 +208,15 @@
 				}, false );
 
 				/**
-				 * Changes to a new type of effect style, this also updates 
+				 * Changes to a new type of effect style, this also updates
 				 * the settings UI to highlight the correct style.
-				 * 
+				 *
 				 * @param {String} type The name of the effect to apply
 				 */
 				function changeEffect( type ) {
 					var previousSelector = document.querySelector( '.settings .effects .' + exampleList.className ),
 						currentSelector = document.querySelector( '.settings .effects .' + type );
-					
+
 					exampleList.className = type;
 
 					if( previousSelector ) {
@@ -229,7 +229,7 @@
 				}
 
 				/**
-				 * Updates the list height to match the window height for 
+				 * Updates the list height to match the window height for
 				 * the demo. Also re-binds the list with stroll.js.
 				 */
 				function updateHeight() {
@@ -241,6 +241,6 @@
 
 			})();
 		</script>
-		
+
 	</body>
 </html>
