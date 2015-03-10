@@ -2,11 +2,11 @@
  * stroll.js 1.2 - CSS scroll effects
  * http://lab.hakim.se/scroll-effects
  * MIT licensed
- * 
+ *
  * Copyright (C) 2012 Hakim El Hattab, http://hakim.se
  */
 (function(){var h=500;
-var b=!!("ontouchstart" in window);var j=[];var d=false;function i(){if(d){requestAnimFrame(i);for(var n=0,m=j.length;n<m;n++){j[n].update();}}}function l(n,m){if(!n.nodeName||/^(ul|li)$/i.test(n.nodeName)===false){return false;
+var b=!!("ontouchstart" in window);var j=[];var d=false;function i(){if(d){requestAnimFrame(i);for(var n=0,m=j.length;n<m;n++){j[n].update();}}}function l(n,m){if(!n.nodeName||/^(ul|ol)$/i.test(n.nodeName)===false){return false;
 }else{if(e(n)){g(n);}}var o=b?new c(n):new k(n);if(m&&m.live){o.syncInterval=setInterval(function(){o.sync.call(o);},h);}o.sync();j.push(o);if(j.length===1){d=true;
 i();}}function g(n){for(var m=0;m<j.length;m++){var o=j[m];if(o.element==n){o.destroy();j.splice(m,1);m--;}}if(j.length===0){d=false;}}function e(o){for(var n=0,m=j.length;
 n<m;n++){if(j[n].element==o){return true;}}return false;}function f(q,r,o){var p,m;if(typeof q==="string"){var n=document.querySelectorAll(q);for(p=0,m=n.length;
