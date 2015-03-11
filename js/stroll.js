@@ -47,7 +47,7 @@
 	 */
 	function add( element, options ) {
 		// Only allow ul/ol
-		if( !element.nodeName || /^(ul|li)$/i.test( element.nodeName ) === false ) {
+		if( !element.nodeName || /^(ul|ol)$/i.test( element.nodeName ) === false ) {
 			return false;
 		}
 		// Delete duplicates (but continue and re-bind this list to get the
