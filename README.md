@@ -65,4 +65,4 @@ stroll.unbind( selector/element/array );
 
 MIT licensed
 
-Copyright (C) 2011 Hakim El Hattab, http://hakim.se
+Copyright (C) 2017 Hakim El Hattab, http://hakim.se
