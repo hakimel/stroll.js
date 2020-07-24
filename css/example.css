@@ -6,6 +6,7 @@ html, body {
 	padding: 0px;
 }
 
+
 body {
 	background: #323232;
 	font-family: 'Lato', Times, 'Times New Roman', serif;
@@ -26,6 +27,9 @@ header {
 header div {
 	margin-top: 10px;
 }
+#main{
+text-align: center;
+}
 
 a {
 	color: cyan;
@@ -34,12 +38,20 @@ a {
 article {
 	display: inline-block;
 	margin: 20px;
+	border: 1px dotted #FFF;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	box-shadow: 1px 1px 5px black,
+							-1px -1px 5px black;
+
 }
 
 h2 {
 	font-size: 16px;
 	margin-bottom: 20px;
 	text-transform: uppercase;
+	text-shadow: 1px 1px 5px black;
+	opacity: 0.7;
 }
 
 small {
@@ -85,4 +97,3 @@ ul {
 	ul li:nth-child(odd) {
 		background: #fff;
 	}
-
